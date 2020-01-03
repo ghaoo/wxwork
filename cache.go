@@ -15,7 +15,7 @@ type Cache interface {
 	Remove(key string) error
 }
 
-const DefaultBoltDBFile = `.data/wework/db/rboot.db`
+const DefaultBoltDBFile = `.data/wework/db/wework.db`
 const DefaultBoltBucket = `wework`
 
 type boltCache struct {
@@ -50,7 +50,7 @@ func Bolt() Cache {
 	dbfile := os.Getenv(`BOLT_DB_FILE`)
 
 	if dbfile == `` {
-		// log.Printf(`BOLT_DB_FILE not set, using default: %s`, DefaultBoltDBFile)
+		log.Printf(`BOLT_DB_FILE not set, using default: %s`, DefaultBoltDBFile)
 		dbfile = DefaultBoltDBFile
 	}
 	err := pathExist(dbfile)
@@ -61,7 +61,7 @@ func Bolt() Cache {
 
 	bucket := os.Getenv("BOLT_BUCKET")
 	if bucket == `` {
-		// log.Printf(`BOLT_BUCKET not set, using default: %s`, DefaultBoltBucket)
+		log.Printf(`BOLT_BUCKET not set, using default: %s`, DefaultBoltBucket)
 		bucket = DefaultBoltBucket
 	}
 

@@ -24,7 +24,8 @@ type Client struct {
 	// AccessToken 应用登录凭证
 	AccessToken *AccessToken
 
-	Cache Cache
+	Cache  Cache
+	client *http.Client
 }
 
 func NewClientFromEnv() (*Client, error) {
@@ -41,6 +42,7 @@ func NewClientFromEnv() (*Client, error) {
 		Secret:      secret,
 		AccessToken: new(AccessToken),
 		Cache:       Bolt(),
+		client:      &http.Client{},
 	}, nil
 }
 
@@ -52,11 +54,18 @@ func NewClient(corpid, secret string, agentid int) *Client {
 		Secret:      secret,
 		AccessToken: new(AccessToken),
 		Cache:       Bolt(),
+		client:      &http.Client{},
 	}
 }
 
+// SetCache 设置缓存处理器
 func (c *Client) SetCache(cache Cache) {
 	c.Cache = cache
+}
+
+// SetHttpClient 设置一个可用的 http client
+func (c *Client) SetHttpClient(client *http.Client) {
+	c.client = client
 }
 
 type Caller interface {
@@ -77,9 +86,8 @@ func (b baseCaller) Error() error {
 	return errors.New(b.ErrMsg)
 }
 
+// Execute 在默认的http客户端执行一个http请求
 func (c *Client) Execute(method string, url string, body io.Reader, caller Caller) error {
-	client := &http.Client{}
-
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return err
@@ -89,7 +97,7 @@ func (c *Client) Execute(method string, url string, body io.Reader, caller Calle
 
 	fmt.Println(method, req.URL.String())
 
-	resp, err := client.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -106,6 +114,7 @@ func (c *Client) Execute(method string, url string, body io.Reader, caller Calle
 	return nil
 }
 
+// ExecuteWithToken 在默认的http客户端执行一个http请求，并在请求中附带 AccessToken
 func (c *Client) ExecuteWithToken(method string, path string, body io.Reader, caller Caller) error {
 
 	accessToken, err := c.GetAccessToken()

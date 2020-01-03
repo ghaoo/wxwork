@@ -54,7 +54,11 @@ type Message struct {
 	// 是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
 	DuplicateCheckInterval int64 `json:"duplicate_check_interval,omitempty"`
 
-	Text TextMessage `json:"text,omitempty"` // 文本消息
+	Text  TextMessage  `json:"text,omitempty"`  // 文本消息
+	Image MediaMessage `json:"image,omitempty"` // 图片消息
+	Voice MediaMessage `json:"voice,omitempty"` // 语音消息
+	Video MediaMessage `json:"video,omitempty"` // 视频消息
+	File  MediaMessage `json:"file,omitempty"`  // 文件消息
 }
 
 // SetUser 设置接收成员
