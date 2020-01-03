@@ -3,6 +3,7 @@ package workwx
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -10,9 +11,10 @@ import (
 	"strconv"
 )
 
+// 企业微信API接口基础网址
 const BaseURL = "https://qyapi.weixin.qq.com/cgi-bin/"
 
-type Agent struct {
+type Client struct {
 	// 企业ID
 	CorpID string
 	// AgentID 应用ID
@@ -20,19 +22,12 @@ type Agent struct {
 	// Secret 应用秘钥
 	Secret string
 	// AccessToken 应用登录凭证
-	AccessToken *AccountToken
+	AccessToken *AccessToken
 
-	cachePath string
-
-	client *http.Client
+	Cache Cache
 }
 
-func NewAgentFromEnv() (*Agent, error) {
-	cachePath := ".data/wework"
-	if os.Getenv("CACHE_PATH") == "" {
-		cachePath = os.Getenv("CACHE_PATH")
-	}
-
+func NewClientFromEnv() (*Client, error) {
 	corpid := os.Getenv("WEWORK_CORP_ID")
 	secret := os.Getenv("WEWORK_SECRET")
 	agentid, _ := strconv.Atoi(os.Getenv("WEWORK_AGENT_ID"))
@@ -40,28 +35,28 @@ func NewAgentFromEnv() (*Agent, error) {
 		return nil, errors.New("请检查 WEWORK_CORP_ID、WEWORK_SECRET、WEWORK_AGENT_ID 是否已全部设置成功")
 	}
 
-	return &Agent{
-		CorpID:    corpid,
-		AgentID:   agentid,
-		Secret:    secret,
-		cachePath: cachePath,
-		client:    http.DefaultClient,
+	return &Client{
+		CorpID:      corpid,
+		AgentID:     agentid,
+		Secret:      secret,
+		AccessToken: new(AccessToken),
+		Cache:       Bolt(),
 	}, nil
 }
 
-func NewAgent(corpid, secret string, agentid int, cachePath ...string) *Agent {
-	cache := ".data/wework"
-	if len(cachePath) > 0 {
-		cache = cachePath[0]
-	}
+func NewClient(corpid, secret string, agentid int) *Client {
 
-	return &Agent{
-		CorpID:    corpid,
-		AgentID:   agentid,
-		Secret:    secret,
-		cachePath: cache,
-		client:    http.DefaultClient,
+	return &Client{
+		CorpID:      corpid,
+		AgentID:     agentid,
+		Secret:      secret,
+		AccessToken: new(AccessToken),
+		Cache:       Bolt(),
 	}
+}
+
+func (c *Client) SetCache(cache Cache) {
+	c.Cache = cache
 }
 
 type Caller interface {
@@ -74,21 +69,27 @@ type baseCaller struct {
 	ErrMsg  string `json:"errmsg,omitempty"`  // 返回码提示语
 }
 
-func (b *baseCaller) Success() bool {
+func (b baseCaller) Success() bool {
 	return b.ErrCode == 0
 }
 
-func (b *baseCaller) Error() error {
+func (b baseCaller) Error() error {
 	return errors.New(b.ErrMsg)
 }
 
-func (a *Agent) Execute(method string, path string, body io.Reader, caller Caller) error {
-	req, err := http.NewRequest(method, BaseURL+path, body)
+func (c *Client) Execute(method string, url string, body io.Reader, caller Caller) error {
+	client := &http.Client{}
+
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return err
 	}
 
-	resp, err := a.client.Do(req)
+	req.Header.Set("Content-Type", "application/json")
+
+	fmt.Println(method, req.URL.String())
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -105,23 +106,22 @@ func (a *Agent) Execute(method string, path string, body io.Reader, caller Calle
 	return nil
 }
 
-func (a *Agent) ExecuteWithToken(method string, path string, body io.Reader, caller Caller) error {
+func (c *Client) ExecuteWithToken(method string, path string, body io.Reader, caller Caller) error {
 
-	accountToken, err := a.getAccountToken()
+	accessToken, err := c.GetAccessToken()
 	if err != nil {
 		return err
 	}
 
 	query := url.Values{}
-	query.Set("account_token", accountToken)
+	query.Set("access_token", accessToken)
 
-	base, err := url.Parse(BaseURL)
+	u, err := url.Parse(BaseURL + path)
 	if err != nil {
 		panic(err)
 	}
 
-	base.Path = path
-	base.RawQuery = query.Encode()
+	u.RawQuery = query.Encode()
 
-	return a.Execute(method, base.String(), body, caller)
+	return c.Execute(method, u.String(), body, caller)
 }
