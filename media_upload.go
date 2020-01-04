@@ -3,9 +3,11 @@ package workwx
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"mime/multipart"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -13,11 +15,11 @@ type Media struct {
 	baseCaller
 	Type      string `json:"type"`       // 文件类型,image、voice、video、file
 	MediaId   string `json:"media_id"`   // 唯一标识，3天内有效
-	CreatedAt int64  `json:"created_at"` // 上传时间戳
+	CreatedAt string `json:"created_at"` // 上传时间戳
 }
 
 // MediaUpload 上传临时素材并获取素材信息
-func (c *Client) MediaUpload(mediaType string, buf []byte, info os.FileInfo) (*Media, error) {
+func (c *Client) UploadMediaWithType(mediaType string, buf []byte, info os.FileInfo) (*Media, error) {
 
 	buffer := &bytes.Buffer{}
 	writer := multipart.NewWriter(buffer)
@@ -66,4 +68,32 @@ func (c *Client) MediaUpload(mediaType string, buf []byte, info os.FileInfo) (*M
 	}
 
 	return media, nil
+}
+
+func (c *Client) UploadMedia(file string) (*Media, error) {
+	info, err := os.Stat(file)
+	if err != nil {
+		return nil, err
+	}
+
+	buf, err := ioutil.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+
+	var mediaType string
+	//var filename = strings.ToLower(info.Name())
+	switch filepath.Ext(info.Name()) {
+	case ".jpg", ".png":
+		mediaType = "image"
+	case ".arm":
+		mediaType = "voice"
+	case ".mp4":
+		mediaType = "video"
+	default:
+		mediaType = "file"
+
+	}
+
+	return c.UploadMediaWithType(mediaType, buf, info)
 }

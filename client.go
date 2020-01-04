@@ -3,7 +3,6 @@ package workwx
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -94,8 +93,6 @@ func (c *Client) Execute(method string, url string, body io.Reader, caller Calle
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-
-	fmt.Println(method, req.URL.String())
 
 	resp, err := c.client.Do(req)
 	if err != nil {

@@ -52,17 +52,17 @@ type Message struct {
 	// 是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
 	DuplicateCheckInterval int64 `json:"duplicate_check_interval,omitempty"`
 
-	Text        TextMessage              `json:"text,omitempty"`               // 文本消息
-	Markdown    TextMessage              `json:"markdown,omitempty"`           // markdown 消息
-	Image       MediaMessage             `json:"image,omitempty"`              // 图片消息
-	Voice       MediaMessage             `json:"voice,omitempty"`              // 语音消息
-	File        MediaMessage             `json:"file,omitempty"`               // 文件消息
-	Video       VideoMessage             `json:"video,omitempty"`              // 视频消息
-	TextCard    TextCardMessage          `json:"textcard,omitempty"`           // 文本卡片消息
-	News        NewsMessage              `json:"news,omitempty"`               // 图文消息
-	MPNews      MPNewsMessage            `json:"mpnews,omitempty"`             // 图文消息(mpnews)
-	MiniProgram MiniprogramNoticeMessage `json:"miniprogram_notice,omitempty"` // 小程序消息
-	TaskCard    TaskCardMessage          `json:"taskcard,omitempty"`           // 任务卡片消息
+	Text        *TextMessage              `json:"text,omitempty"`               // 文本消息
+	Markdown    *TextMessage              `json:"markdown,omitempty"`           // markdown 消息
+	Image       *MediaMessage             `json:"image,omitempty"`              // 图片消息
+	Voice       *MediaMessage             `json:"voice,omitempty"`              // 语音消息
+	File        *MediaMessage             `json:"file,omitempty"`               // 文件消息
+	Video       *VideoMessage             `json:"video,omitempty"`              // 视频消息
+	TextCard    *TextCardMessage          `json:"textcard,omitempty"`           // 文本卡片消息
+	News        *NewsMessage              `json:"news,omitempty"`               // 图文消息
+	MPNews      *MPNewsMessage            `json:"mpnews,omitempty"`             // 图文消息(mpnews)
+	MiniProgram *MiniprogramNoticeMessage `json:"miniprogram_notice,omitempty"` // 小程序消息
+	TaskCard    *TaskCardMessage          `json:"taskcard,omitempty"`           // 任务卡片消息
 }
 
 // SetUser 设置接收成员
