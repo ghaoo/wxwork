@@ -6,20 +6,18 @@ import (
 	"strings"
 )
 
-type MSG_TYPE_ENUM int
-
 const (
-	MSG_TYPE_TEXT               MSG_TYPE_ENUM = iota // 文本消息
-	MSG_TYPE_IMAGE                                   // 图片消息
-	MSG_TYPE_VOICE                                   // 语音消息
-	MSG_TYPE_VIDEO                                   // 视频消息
-	MSG_TYPE_FILE                                    // 文件消息
-	MSG_TYPE_TEXTCARD                                // 文本卡片消息
-	MSG_TYPE_NEWS                                    // 图文消息
-	MSG_TYPE_MPNEWS                                  // 图文消息（mpnews）
-	MSG_TYPE_MARKDOWN                                // markdown消息
-	MSG_TYPE_MINIPROGRAM_NOTICE                      // 小程序通知消息
-	MSG_TYPE_TASKCARD                                // 任务卡片消息
+	MSG_TYPE_TEXT               = "text"               // 文本消息
+	MSG_TYPE_IMAGE              = "image"              // 图片消息
+	MSG_TYPE_VOICE              = "voice"              // 语音消息
+	MSG_TYPE_VIDEO              = "video"              // 视频消息
+	MSG_TYPE_FILE               = "file"               // 文件消息
+	MSG_TYPE_TEXTCARD           = "textcard"           // 文本卡片消息
+	MSG_TYPE_NEWS               = "news"               // 图文消息
+	MSG_TYPE_MPNEWS             = "mpnews"             // 图文消息（mpnews）
+	MSG_TYPE_MARKDOWN           = "markdown"           // markdown消息
+	MSG_TYPE_MINIPROGRAM_NOTICE = "miniprogram_notice" // 小程序通知消息
+	MSG_TYPE_TASKCARD           = "taskcard"           // 任务卡片消息
 )
 
 /**
@@ -54,11 +52,17 @@ type Message struct {
 	// 是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
 	DuplicateCheckInterval int64 `json:"duplicate_check_interval,omitempty"`
 
-	Text  TextMessage  `json:"text,omitempty"`  // 文本消息
-	Image MediaMessage `json:"image,omitempty"` // 图片消息
-	Voice MediaMessage `json:"voice,omitempty"` // 语音消息
-	Video MediaMessage `json:"video,omitempty"` // 视频消息
-	File  MediaMessage `json:"file,omitempty"`  // 文件消息
+	Text        TextMessage              `json:"text,omitempty"`               // 文本消息
+	Markdown    TextMessage              `json:"markdown,omitempty"`           // markdown 消息
+	Image       MediaMessage             `json:"image,omitempty"`              // 图片消息
+	Voice       MediaMessage             `json:"voice,omitempty"`              // 语音消息
+	File        MediaMessage             `json:"file,omitempty"`               // 文件消息
+	Video       VideoMessage             `json:"video,omitempty"`              // 视频消息
+	TextCard    TextCardMessage          `json:"textcard,omitempty"`           // 文本卡片消息
+	News        NewsMessage              `json:"news,omitempty"`               // 图文消息
+	MPNews      MPNewsMessage            `json:"mpnews,omitempty"`             // 图文消息(mpnews)
+	MiniProgram MiniprogramNoticeMessage `json:"miniprogram_notice,omitempty"` // 小程序消息
+	TaskCard    TaskCardMessage          `json:"taskcard,omitempty"`           // 任务卡片消息
 }
 
 // SetUser 设置接收成员
@@ -85,19 +89,44 @@ type RespMessage struct {
 	InvalidTag   string `json:"invalidtag"`
 }
 
-// SendMessage 用于消息推送-发送应用消息
-func (c *Client) SendMessage(msg *Message) (RespMessage, error) {
+// SendMessage 用于消息推送-发送应用消息，返回接收失败用户、组织、标签列表
+func (c *Client) SendMessage(msg *Message) (map[string][]string, error) {
 	msg.AgentID = c.AgentID
 
 	body, _ := json.Marshal(msg)
 
 	var resp RespMessage
 
-	path := "message/send"
-	err := c.ExecuteWithToken("POST", path, bytes.NewReader(body), &resp)
+	var invalid = make(map[string][]string, 3)
+	err := c.ExecuteWithToken("POST", "message/send", bytes.NewReader(body), &resp)
 	if err != nil {
-		return resp, err
+		return nil, err
+	}
+	invalid["user"] = strings.Split(resp.InvalidUser, "|")
+	invalid["party"] = strings.Split(resp.InvalidParty, "|")
+	invalid["tag"] = strings.Split(resp.InvalidTag, "|")
+
+	return invalid, nil
+}
+
+// UpdateTaskcard 更新任务卡片消息状态,返回接收失败用户列表
+func (c *Client) UpdateTaskcard(taskId, clickedKey string, userids []string) ([]string, error) {
+	request := map[string]interface{}{
+		"userids":     userids,
+		"agentid":     c.AgentID,
+		"task_id":     taskId,
+		"clicked_key": clickedKey,
 	}
 
-	return resp, nil
+	body, _ := json.Marshal(request)
+
+	var resp struct {
+		baseCaller
+		Invaliduser []string `json:"invaliduser"`
+	}
+
+	err := c.ExecuteWithToken("POST", "message/update_taskcard", bytes.NewReader(body), &resp)
+
+	return resp.Invaliduser, err
+
 }
