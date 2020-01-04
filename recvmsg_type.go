@@ -57,7 +57,7 @@ type RecvLinkMessage struct {
 
 const (
 	EVENT_TYPE_SUBSCRIBE            = "subscribe"            // 关注
-	EVENT_TYPE_Unsubscribe          = "unsubscribe"          // 取消关注
+	EVENT_TYPE_UNSUBSCRIBE          = "unsubscribe"          // 取消关注
 	EVENT_TYPE_ENTER_AGENT          = "enter_agent"          // 进入应用
 	EVENT_TYPE_LOCATION             = "LOCATION"             // 上报地理位置
 	EVENT_TYPE_BATCH_JOB_RESULT     = "batch_job_result"     // 异步任务完成事件推送

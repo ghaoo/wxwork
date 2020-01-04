@@ -56,7 +56,6 @@ func NewAgent(corpid, secret string, agentid int) *Agent {
 		AgentID:     agentid,
 		Secret:      secret,
 		AccessToken: new(AccessToken),
-		Cache:       Bolt(),
 		client:      &http.Client{},
 	}
 }
