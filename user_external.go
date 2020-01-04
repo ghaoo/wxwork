@@ -1,4 +1,4 @@
-package workwx
+package wxwork
 
 /**
  * 成员对外信息

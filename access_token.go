@@ -1,4 +1,4 @@
-package workwx
+package wxwork
 
 import (
 	"encoding/json"

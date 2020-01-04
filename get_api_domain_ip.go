@@ -1,1 +1,1 @@
-package workwx
+package wxwork

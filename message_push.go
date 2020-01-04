@@ -1,4 +1,5 @@
-package workwx
+// 发送消息
+package wxwork
 
 import (
 	"bytes"
