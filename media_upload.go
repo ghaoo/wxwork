@@ -19,7 +19,7 @@ type Media struct {
 }
 
 // MediaUpload 上传临时素材并获取素材信息
-func (c *Client) UploadMediaWithType(mediaType string, buf []byte, info os.FileInfo) (*Media, error) {
+func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileInfo) (*Media, error) {
 
 	buffer := &bytes.Buffer{}
 	writer := multipart.NewWriter(buffer)
@@ -35,7 +35,7 @@ func (c *Client) UploadMediaWithType(mediaType string, buf []byte, info os.FileI
 	writer.WriteField("filelength", strconv.FormatInt(info.Size(), 10))
 	writer.Close()
 
-	accessToken, err := c.GetAccessToken()
+	accessToken, err := a.GetAccessToken()
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *Client) UploadMediaWithType(mediaType string, buf []byte, info os.FileI
 
 	u.RawQuery = query.Encode()
 
-	resp, err := c.client.Post(u.String(), writer.FormDataContentType(), buffer)
+	resp, err := a.client.Post(u.String(), writer.FormDataContentType(), buffer)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (c *Client) UploadMediaWithType(mediaType string, buf []byte, info os.FileI
 	return media, nil
 }
 
-func (c *Client) UploadMedia(file string) (*Media, error) {
+func (a *Agent) UploadMedia(file string) (*Media, error) {
 	info, err := os.Stat(file)
 	if err != nil {
 		return nil, err
@@ -95,5 +95,5 @@ func (c *Client) UploadMedia(file string) (*Media, error) {
 
 	}
 
-	return c.UploadMediaWithType(mediaType, buf, info)
+	return a.UploadMediaWithType(mediaType, buf, info)
 }

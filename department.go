@@ -6,13 +6,13 @@ package wxwork
  */
 type Department struct {
 	// 部门id，32位整型，指定时必须大于1。若不填该参数，将自动生成id
-	ID int
+	ID int `json:"id" xml:"Id"`
 	// 部门名称。长度限制为1~32个字符，字符不能包括\:?”<>｜
-	Name string
+	Name string `json:"Name" xml:"Name"`
 	// 英文名称，需要在管理后台开启多语言支持才能生效。长度限制为1~32个字符，字符不能包括\:?”<>｜
-	NameEn string
+	NameEn string `json:"name_en"`
 	// 父部门id，32位整型
-	ParentID int
+	ParentID int `json:"parentid" xml:"ParentID"`
 	// 在父部门中的次序值。order值大的排序靠前。有效的值范围是[0, 2^32)
-	Order int
+	Order int `json:"order" xml:"order"`
 }

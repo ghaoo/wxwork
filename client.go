@@ -3,17 +3,16 @@ package wxwork
 import (
 	"encoding/json"
 	"errors"
+	"github.com/sbzhu/weworkapi_golang/wxbizmsgcrypt"
 	"io"
 	"net/http"
 	"net/url"
-	"os"
-	"strconv"
 )
 
 // 企业微信API接口基础网址
 const BaseURL = "https://qyapi.weixin.qq.com/cgi-bin/"
 
-type Client struct {
+type Agent struct {
 	// 企业ID
 	CorpID string
 	// AgentID 应用ID
@@ -23,31 +22,36 @@ type Client struct {
 	// AccessToken 应用登录凭证
 	AccessToken *AccessToken
 
-	Cache  Cache
+	Cache    Cache
+	callback *Callback
+
 	client *http.Client
 }
 
-func NewClientFromEnv() (*Client, error) {
-	corpid := os.Getenv("WEWORK_CORP_ID")
-	secret := os.Getenv("WEWORK_SECRET")
-	agentid, _ := strconv.Atoi(os.Getenv("WEWORK_AGENT_ID"))
-	if corpid == "" || secret == "" {
-		return nil, errors.New("请检查 WEWORK_CORP_ID、WEWORK_SECRET、WEWORK_AGENT_ID 是否已全部设置成功")
-	}
+// Callback Agent 回调配置
+type Callback struct {
+	Token          string
+	EncodingAESKey string
 
-	return &Client{
-		CorpID:      corpid,
-		AgentID:     agentid,
-		Secret:      secret,
-		AccessToken: new(AccessToken),
-		Cache:       Bolt(),
-		client:      &http.Client{},
-	}, nil
+	crypt *wxbizmsgcrypt.WXBizMsgCrypt
 }
 
-func NewClient(corpid, secret string, agentid int) *Client {
+func (a *Agent) SetCallback(token, encodingAESKey string) *Agent {
+	callback := &Callback{
+		Token:          token,
+		EncodingAESKey: encodingAESKey,
+	}
 
-	return &Client{
+	callback.crypt = wxbizmsgcrypt.NewWXBizMsgCrypt(token, encodingAESKey, a.CorpID, wxbizmsgcrypt.XmlType)
+
+	a.callback = callback
+
+	return a
+}
+
+func NewAgent(corpid, secret string, agentid int) *Agent {
+
+	return &Agent{
 		CorpID:      corpid,
 		AgentID:     agentid,
 		Secret:      secret,
@@ -58,13 +62,17 @@ func NewClient(corpid, secret string, agentid int) *Client {
 }
 
 // SetCache 设置缓存处理器
-func (c *Client) SetCache(cache Cache) {
-	c.Cache = cache
+func (a *Agent) SetCache(cache Cache) *Agent {
+	a.Cache = cache
+
+	return a
 }
 
 // SetHttpClient 设置一个可用的 http client
-func (c *Client) SetHttpClient(client *http.Client) {
-	c.client = client
+func (a *Agent) SetHttpClient(client *http.Client) *Agent {
+	a.client = client
+
+	return a
 }
 
 type Caller interface {
@@ -73,8 +81,8 @@ type Caller interface {
 }
 
 type baseCaller struct {
-	ErrCode int    `json:"errcode,omitempty"` // 出错返回码，为0表示成功，非0表示调用失败
-	ErrMsg  string `json:"errmsg,omitempty"`  // 返回码提示语
+	ErrCode int    `json:"errcode,omitempty" xml:"ErrCode"` // 出错返回码，为0表示成功，非0表示调用失败
+	ErrMsg  string `json:"errmsg,omitempty" xml:"ErrMsg"`   // 返回码提示语
 }
 
 func (b baseCaller) Success() bool {
@@ -86,7 +94,7 @@ func (b baseCaller) Error() error {
 }
 
 // Execute 在默认的http客户端执行一个http请求
-func (c *Client) Execute(method string, url string, body io.Reader, caller Caller) error {
+func (a *Agent) Execute(method string, url string, body io.Reader, caller Caller) error {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return err
@@ -94,7 +102,7 @@ func (c *Client) Execute(method string, url string, body io.Reader, caller Calle
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.client.Do(req)
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -112,9 +120,9 @@ func (c *Client) Execute(method string, url string, body io.Reader, caller Calle
 }
 
 // ExecuteWithToken 在默认的http客户端执行一个http请求，并在请求中附带 AccessToken
-func (c *Client) ExecuteWithToken(method string, path string, body io.Reader, caller Caller) error {
+func (a *Agent) ExecuteWithToken(method string, path string, body io.Reader, caller Caller) error {
 
-	accessToken, err := c.GetAccessToken()
+	accessToken, err := a.GetAccessToken()
 	if err != nil {
 		return err
 	}
@@ -129,5 +137,5 @@ func (c *Client) ExecuteWithToken(method string, path string, body io.Reader, ca
 
 	u.RawQuery = query.Encode()
 
-	return c.Execute(method, u.String(), body, caller)
+	return a.Execute(method, u.String(), body, caller)
 }

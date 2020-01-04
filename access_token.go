@@ -23,56 +23,56 @@ func (token *AccessToken) IsExpire() bool {
 }
 
 // RefreshAccessToken 用于刷新 access_token
-func (c *Client) RefreshAccessToken() error {
-	c.AccessToken.mu.Lock()
-	defer c.AccessToken.mu.Unlock()
+func (a *Agent) RefreshAccessToken() error {
+	a.AccessToken.mu.Lock()
+	defer a.AccessToken.mu.Unlock()
 
 	var token AccessToken
-	path := fmt.Sprintf("%sgettoken?corpid=%s&corpsecret=%s", BaseURL, c.CorpID, c.Secret)
+	path := fmt.Sprintf("%sgettoken?corpid=%s&corpsecret=%s", BaseURL, a.CorpID, a.Secret)
 
-	err := c.Execute("GET", path, nil, &token)
+	err := a.Execute("GET", path, nil, &token)
 	if err != nil {
 		return err
 	}
 
 	token.ExpireAt = time.Now().Add(time.Duration(token.ExpiresIn) * time.Second)
-	c.AccessToken = &token
+	a.AccessToken = &token
 
-	if c.Cache != nil {
+	if a.Cache != nil {
 		bt, _ := json.Marshal(token)
-		c.Cache.Set("access_token", bt)
+		a.Cache.Set("access_token", bt)
 	}
 
 	return nil
 }
 
 // getAccessTokenFromCache 从缓存中获取 access_token
-func (c *Client) getAccessTokenFromCache() (string, error) {
-	if c.Cache == nil {
+func (a *Agent) getAccessTokenFromCache() (string, error) {
+	if a.Cache == nil {
 		return "", fmt.Errorf("client cache processor not found")
 	}
 
-	accessToken := c.Cache.Get("access_token")
-	err := json.Unmarshal(accessToken, &c.AccessToken)
+	accessToken := a.Cache.Get("access_token")
+	err := json.Unmarshal(accessToken, &a.AccessToken)
 
-	if c.AccessToken.IsExpire() || c.AccessToken.AccessToken == "" {
-		err = c.RefreshAccessToken()
+	if a.AccessToken.IsExpire() || a.AccessToken.AccessToken == "" {
+		err = a.RefreshAccessToken()
 	}
 
-	return c.AccessToken.AccessToken, err
+	return a.AccessToken.AccessToken, err
 
 }
 
 // GetAccessToken 获取access_token
-func (c *Client) GetAccessToken() (string, error) {
+func (a *Agent) GetAccessToken() (string, error) {
 	// 如果设置了 缓存器，从缓存器中获取 token，防止频繁刷新
-	if c.Cache != nil {
-		return c.getAccessTokenFromCache()
+	if a.Cache != nil {
+		return a.getAccessTokenFromCache()
 	}
 
 	var err error
-	if c.AccessToken.IsExpire() {
-		err = c.RefreshAccessToken()
+	if a.AccessToken.IsExpire() {
+		err = a.RefreshAccessToken()
 	}
-	return c.AccessToken.AccessToken, err
+	return a.AccessToken.AccessToken, err
 }

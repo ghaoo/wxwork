@@ -91,15 +91,15 @@ type RespMessage struct {
 }
 
 // SendMessage 用于消息推送-发送应用消息，返回接收失败用户、组织、标签列表
-func (c *Client) SendMessage(msg *Message) (map[string][]string, error) {
-	msg.AgentID = c.AgentID
+func (a *Agent) SendMessage(msg *Message) (map[string][]string, error) {
+	msg.AgentID = a.AgentID
 
 	body, _ := json.Marshal(msg)
 
 	var resp RespMessage
 
 	var invalid = make(map[string][]string, 3)
-	err := c.ExecuteWithToken("POST", "message/send", bytes.NewReader(body), &resp)
+	err := a.ExecuteWithToken("POST", "message/send", bytes.NewReader(body), &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -111,10 +111,10 @@ func (c *Client) SendMessage(msg *Message) (map[string][]string, error) {
 }
 
 // UpdateTaskcard 更新任务卡片消息状态,返回接收失败用户列表
-func (c *Client) UpdateTaskcard(taskId, clickedKey string, userids []string) ([]string, error) {
+func (a *Agent) UpdateTaskcard(taskId, clickedKey string, userids []string) ([]string, error) {
 	request := map[string]interface{}{
 		"userids":     userids,
-		"agentid":     c.AgentID,
+		"agentid":     a.AgentID,
 		"task_id":     taskId,
 		"clicked_key": clickedKey,
 	}
@@ -126,7 +126,7 @@ func (c *Client) UpdateTaskcard(taskId, clickedKey string, userids []string) ([]
 		Invaliduser []string `json:"invaliduser"`
 	}
 
-	err := c.ExecuteWithToken("POST", "message/update_taskcard", bytes.NewReader(body), &resp)
+	err := a.ExecuteWithToken("POST", "message/update_taskcard", bytes.NewReader(body), &resp)
 
 	return resp.Invaliduser, err
 
