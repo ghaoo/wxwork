@@ -178,6 +178,17 @@ type TaskCardBtn struct {
 	IsBold      bool   `json:"is_bold,omitempty"`      // 按钮字体是否加粗
 }
 
+// NewTaskCardBtn 创建任务卡片按键
+func NewTaskCardBtn(key, name, rename, color string, isbold bool) TaskCardBtn {
+	return TaskCardBtn{
+		Key: key,
+		Name: name,
+		ReplaceName: rename,
+		Color: color,
+		IsBold: isbold,
+	}
+}
+
 // NewTaskCardMessage 创建一条任务卡片消息
 func NewTaskCardMessage(title, desc, url, taskId string, btn []TaskCardBtn) *Message {
 	return &Message{

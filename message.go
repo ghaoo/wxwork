@@ -45,13 +45,13 @@ type Message struct {
 	AgentID int `json:"agentid"`
 
 	// 是否是保密消息，0表示否，1表示是，默认0
-	Safe bool `json:"safe,omitempty"`
+	Safe int8 `json:"safe,omitempty"`
 
 	// 是否开启id转译，0表示否，1表示是，默认0
-	EnableIdTrans bool `json:"enable_id_trans,omitempty"`
+	EnableIdTrans int8 `json:"enable_id_trans,omitempty"`
 
 	// 是否开启重复消息检查，0表示否，1表示是，默认0
-	EnableDuplicateCheck bool `json:"enable_duplicate_check,omitempty"`
+	EnableDuplicateCheck int8 `json:"enable_duplicate_check,omitempty"`
 
 	// 是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
 	DuplicateCheckInterval int64 `json:"duplicate_check_interval,omitempty"`
