@@ -41,3 +41,4 @@ type RecvEvent struct {
 	// 通讯录变更事件
 	ChangeType string `xml:"ChangeType"`
 }
+
