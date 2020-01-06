@@ -15,16 +15,16 @@ type RecvMessage struct {
 	CreateTime   int64  `xml:"CreateTime"`   // 消息创建时间（整型）
 	MsgType      string `xml:"MsgType"`      // 消息类型
 	AgentID      int    `xml:"AgentId"`      // 企业应用的id，整型
-	MsgID   int64  `xml:"MsgId"`   // 消息id，64位整型
-	
+	MsgID        int64  `xml:"MsgId"`        // 消息id，64位整型
+
 	Content string `xml:"Content"` // 文本消息
 
 	// 多媒体消息
-	MediaID string `xml:"MediaId"` // 媒体文件id
-	PicURL  string `xml:"PicUrl"`  // 图片链接
-	Format  string `xml:"Format"`  // 语音格式
+	MediaID      string `xml:"MediaId"`      // 媒体文件id
+	PicURL       string `xml:"PicUrl"`       // 图片链接
+	Format       string `xml:"Format"`       // 语音格式
 	ThumbMediaID string `xml:"ThumbMediaId"` // 视频缩略图的媒体id
-	
+
 	// 位置消息
 	LocationX float64 `xml:"Location_X"` // 地理位置纬度
 	LocationY float64 `xml:"Location_Y"` // 地理位置经度
@@ -37,7 +37,6 @@ type RecvMessage struct {
 	Url         string `xml:"Url"`         // 链接跳转的url
 
 	RecvEvent
-
 }
 
 // ParseRecvMsg 解析接收到的消息
