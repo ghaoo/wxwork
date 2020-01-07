@@ -9,6 +9,7 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+// Cache 缓存接口，自定义缓存需实现此接口
 type Cache interface {
 	Set(key string, value []byte) error
 	Get(key string) []byte
