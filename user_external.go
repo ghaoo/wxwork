@@ -1,6 +1,6 @@
 package wxwork
 
-// 成员对外信息
+// ExternalProfile 成员对外信息
 // 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/92230
 type ExternalProfile struct {
 
@@ -11,10 +11,12 @@ type ExternalProfile struct {
 	ExternalAttr ExternalAttr `json:"external_attr,omitempty"`
 }
 
+// Attrs 自定义字段
 type Attrs struct {
 	Attrs []ExternalAttr `json:"attrs"`
 }
 
+// ExternalAttr 自定义字段内容
 type ExternalAttr struct {
 	// 属性类型: 0-文本 1-网页 2-小程序
 	Type int `json:"type,omitempty"`
@@ -32,11 +34,13 @@ type ExternalAttr struct {
 	Miniprogram MiniprogramAttr `json:"miniprogram,omitempty"`
 }
 
+// TextAttr 文本属性
 type TextAttr struct {
 	// 文本属性内容,长度限制12个UTF8字符
 	Value string `json:"value,omitempty"`
 }
 
+// WebAttr 网页属性
 type WebAttr struct {
 	// 网页的url,必须包含http或者https头
 	Url string `json:"url,omitempty"`
@@ -45,6 +49,7 @@ type WebAttr struct {
 	Title string `json:"title,omitempty"`
 }
 
+// MiniprogramAttr 小程序属性
 type MiniprogramAttr struct {
 	// 小程序appid，必须是有在本企业安装授权的小程序，否则会被忽略
 	Appid int `json:"appid,omitempty"`

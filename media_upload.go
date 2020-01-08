@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// Media 素材
 type Media struct {
 	baseCaller
 	Type      string `json:"type,omitempty"`       // 文件类型,image、voice、video、file

@@ -10,9 +10,9 @@ import (
 	"path"
 )
 
-// 企业微信API接口基础网址
-const BaseURL = "https://qyapi.weixin.qq.com/cgi-bin/"
+const BaseURL = "https://qyapi.weixin.qq.com/cgi-bin/" // 企业微信API接口基础网址
 
+// Agent 应用结构
 type Agent struct {
 	// 企业ID
 	CorpID string
@@ -29,7 +29,7 @@ type Agent struct {
 	client *http.Client
 }
 
-// Callback Agent 回调配置
+// Callback 应用回调配置，需加密
 type Callback struct {
 	Token          string
 	EncodingAESKey string
@@ -37,6 +37,7 @@ type Callback struct {
 	crypt *wxbizmsgcrypt.WXBizMsgCrypt
 }
 
+// SetCallback 设置回调参数
 func (a *Agent) SetCallback(token, encodingAESKey string) *Agent {
 	callback := &Callback{
 		Token:          token,
@@ -50,6 +51,7 @@ func (a *Agent) SetCallback(token, encodingAESKey string) *Agent {
 	return a
 }
 
+// NewAgent 新建一个应用
 func NewAgent(corpid string, agentid int) *Agent {
 
 	return &Agent{
@@ -60,6 +62,7 @@ func NewAgent(corpid string, agentid int) *Agent {
 	}
 }
 
+// WithSecret 添加secret，
 func (a *Agent) WithSecret(secret string) *Agent {
 	a.Secret = secret
 	return a
@@ -79,20 +82,24 @@ func (a *Agent) SetHttpClient(client *http.Client) *Agent {
 	return a
 }
 
+// Caller 执行 http 访问时响应成功接口
 type Caller interface {
 	Success() bool
 	Error() error
 }
 
+// baseCaller 基础响应
 type baseCaller struct {
 	ErrCode int    `json:"errcode,omitempty" xml:"ErrCode"` // 出错返回码，为0表示成功，非0表示调用失败
 	ErrMsg  string `json:"errmsg,omitempty" xml:"ErrMsg"`   // 返回码提示语
 }
 
+// Success 返回是否调用成功
 func (b baseCaller) Success() bool {
 	return b.ErrCode == 0
 }
 
+// Error 返回失败信息
 func (b baseCaller) Error() error {
 	return errors.New(b.ErrMsg)
 }

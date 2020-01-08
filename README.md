@@ -1,4 +1,4 @@
-# WXWork
+# WXWork [![GoDoc](https://godoc.org/github.com/ghaoo/wxwork?status.svg)
 企业微信 SDK，文档见 [godoc](https://godoc.org/github.com/ghaoo/wxwork)
 
 ## TODO

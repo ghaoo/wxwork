@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// 成员信息:
+// User 成员信息:
 // 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90194
 type User struct {
 	// 成员UserID。对应管理端的帐号，企业内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。
@@ -69,7 +69,7 @@ type User struct {
 	Status      int8   `json:"status,omitempty" xml:"status"`   // 激活状态: 1=已激活，2=已禁用，4=未激活。
 }
 
-// CreateContact 创建成员
+// CreateUser 创建成员
 // 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90195
 func (a *Agent) CreateUser(user *User) error {
 	body, _ := json.Marshal(user)
@@ -139,12 +139,12 @@ func (a *Agent) userList(deptId int, fetchChild ...bool) ([]User, error) {
 	query := url.Values{}
 	query.Set("userid", strconv.Itoa(deptId))
 
-	fetch_child := "0"
+	child := "0"
 	if len(fetchChild) > 0 {
-		fetch_child = "1"
+		child = "1"
 	}
 
-	query.Set("fetch_child", fetch_child)
+	query.Set("fetch_child", child)
 
 	err := a.ExecuteWithToken("GET", "user/simplelist", query, nil, &caller)
 

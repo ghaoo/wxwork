@@ -1,4 +1,3 @@
-// 发送消息--消息类型
 package wxwork
 
 // TextMessage 文本消息

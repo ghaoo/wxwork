@@ -16,9 +16,10 @@ type Cache interface {
 	Remove(key string) error
 }
 
-const DefaultBoltDBFile = `.data/wework/db/wework.db`
-const DefaultBoltBucket = `wework`
+const DefaultBoltDBFile = `.data/wework/db/wework.db` // 默认缓存文件
+const DefaultBoltBucket = `wework`                    // 默认缓存 Bucket
 
+// boltCache bolt 缓存器
 type boltCache struct {
 	bolt   *bolt.DB
 	dbfile string
@@ -28,7 +29,7 @@ type boltCache struct {
 	mu sync.Mutex
 }
 
-// 检查存放db文件的文件夹是否存在。
+// pathExist 检查存放db文件的文件夹是否存在。
 // 如果db文件存在运行目录下，则无操作
 func pathExist(dbfile string) error {
 
@@ -43,7 +44,7 @@ func pathExist(dbfile string) error {
 	return nil
 }
 
-// new bolt brain ...
+// Bolt new bolt brain ...
 func Bolt() Cache {
 
 	b := new(boltCache)
@@ -75,7 +76,7 @@ func Bolt() Cache {
 	return b
 }
 
-// save ...
+// Set save ...
 func (b *boltCache) Set(key string, value []byte) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -92,7 +93,7 @@ func (b *boltCache) Set(key string, value []byte) error {
 	return err
 }
 
-// find ...
+// Get find ...
 func (b *boltCache) Get(key string) []byte {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -111,7 +112,7 @@ func (b *boltCache) Get(key string) []byte {
 	return found
 }
 
-// remove ...
+// Remove remove ...
 func (b *boltCache) Remove(key string) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()

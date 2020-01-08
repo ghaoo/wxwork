@@ -1,5 +1,6 @@
 package wxwork
 
+// ReplyMessage 被动回复消息格式
 type ReplyMessage struct {
 	ToUserName   string
 	FromUserName string

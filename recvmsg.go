@@ -1,4 +1,3 @@
-// 接收消息
 package wxwork
 
 import (
@@ -8,7 +7,7 @@ import (
 	"net/http"
 )
 
-// RecvMsg 消息接收基础结构
+// RecvMessage 消息接收基础结构
 type RecvMessage struct {
 	ToUsername   string `xml:"ToUserName"`   // 企业微信CorpID
 	FromUsername string `xml:"FromUserName"` // 成员UserID
@@ -39,7 +38,7 @@ type RecvMessage struct {
 	RecvEvent
 }
 
-// ParseRecvMsg 解析接收到的消息
+// ParseRecvMessage 解析接收到的消息
 func (a *Agent) ParseRecvMessage(signature, timestamp, nonce string, data []byte) (recv RecvMessage, err error) {
 	msg, cryptErr := a.callback.crypt.DecryptMsg(signature, timestamp, nonce, data)
 	if nil != cryptErr {
