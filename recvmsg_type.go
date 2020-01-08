@@ -2,8 +2,7 @@ package wxwork
 
 /******************************Event 事件格式*********************************/
 
-const (
-	// 消息回调事件定义
+/*const (
 	EVENT_TYPE_SUBSCRIBE            = "subscribe"            // 关注事件
 	EVENT_TYPE_UNSUBSCRIBE          = "unsubscribe"          // 取消关注
 	EVENT_TYPE_ENTER_AGENT          = "enter_agent"          // 进入应用
@@ -20,7 +19,7 @@ const (
 	EVENT_TYPE_LOCATION_SELECT      = "location_select"      // 弹出地理位置选择器的事件推送
 	EVENT_TYPE_OPEN_APPROVAL_CHANGE = "open_approval_change" // 审批状态通知事件
 	EVENT_TYPE_TASKCARD_CLICK       = "taskcard_click"       // 任务卡片事件推送
-)
+)*/
 
 // RecvEvent 事件基础结构
 // - 成员关注及取消关注事件、进入应用、菜单事件直接使用

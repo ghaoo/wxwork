@@ -17,10 +17,8 @@ type Cache interface {
 }
 
 const (
-	// 默认缓存文件
-	DefaultBoltDBFile = `.data/wework/db/wework.db`
-	// 默认缓存 Bucket
-	DefaultBoltBucket = `wework`
+	defaultBoltDBFile = `.data/wework/db/wework.db`
+	defaultBoltBucket = `wework`
 )
 
 // boltCache bolt 缓存器
@@ -56,7 +54,7 @@ func Bolt() Cache {
 	dbfile := os.Getenv(`BOLT_DB_FILE`)
 
 	if dbfile == `` {
-		dbfile = DefaultBoltDBFile
+		dbfile = defaultBoltDBFile
 	}
 	err := pathExist(dbfile)
 
@@ -66,7 +64,7 @@ func Bolt() Cache {
 
 	bucket := os.Getenv("BOLT_BUCKET")
 	if bucket == `` {
-		bucket = DefaultBoltBucket
+		bucket = defaultBoltBucket
 	}
 
 	db, err := bolt.Open(dbfile, 0600, nil)

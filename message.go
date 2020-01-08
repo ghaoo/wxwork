@@ -7,21 +7,34 @@ import (
 )
 
 const (
-	// 消息类型定义
-	MSG_TYPE_TEXT               = "text"               // 文本消息
-	MSG_TYPE_IMAGE              = "image"              // 图片消息
-	MSG_TYPE_VOICE              = "voice"              // 语音消息
-	MSG_TYPE_VIDEO              = "video"              // 视频消息
-	MSG_TYPE_FILE               = "file"               // 文件消息
-	MSG_TYPE_TEXTCARD           = "textcard"           // 文本卡片消息
-	MSG_TYPE_NEWS               = "news"               // 图文消息
-	MSG_TYPE_MPNEWS             = "mpnews"             // 图文消息（mpnews）
-	MSG_TYPE_MARKDOWN           = "markdown"           // markdown消息
-	MSG_TYPE_MINIPROGRAM_NOTICE = "miniprogram_notice" // 小程序通知消息
-	MSG_TYPE_TASKCARD           = "taskcard"           // 任务卡片消息
-	MSG_TYPE_LOCATION           = "location"           // 位置消息
-	MSG_TYPE_LINK               = "link"               // 位置消息
-	MSG_TYPE_EVENT              = "event"              // 事件消息
+	// MSG_TYPE_TEXT 文本消息类型
+	MSG_TYPE_TEXT = "text"
+	// MSG_TYPE_IMAGE 图片消息类型
+	MSG_TYPE_IMAGE = "image"
+	// MSG_TYPE_VOICE 语音消息
+	MSG_TYPE_VOICE = "voice"
+	// MSG_TYPE_VIDEO 视频消息
+	MSG_TYPE_VIDEO = "video"
+	// MSG_TYPE_FILE 文件消息
+	MSG_TYPE_FILE = "file"
+	// MSG_TYPE_TEXTCARD 文本卡片消息
+	MSG_TYPE_TEXTCARD = "textcard"
+	// MSG_TYPE_NEWS 图文消息
+	MSG_TYPE_NEWS = "news"
+	// MSG_TYPE_MPNEWS 图文消息（mpnews）
+	MSG_TYPE_MPNEWS = "mpnews"
+	// MSG_TYPE_MARKDOWN markdown消息
+	MSG_TYPE_MARKDOWN = "markdown"
+	// MSG_TYPE_MINIPROGRAM_NOTICE 小程序通知消息
+	MSG_TYPE_MINIPROGRAM_NOTICE = "miniprogram_notice"
+	// MSG_TYPE_TASKCARD 任务卡片消息
+	MSG_TYPE_TASKCARD = "taskcard"
+	// MSG_TYPE_LOCATION 位置消息
+	MSG_TYPE_LOCATION = "location"
+	// MSG_TYPE_LINK 链接消息
+	MSG_TYPE_LINK = "link"
+	// MSG_TYPE_EVENT 事件消息
+	MSG_TYPE_EVENT = "event"
 )
 
 // Message 消息推送

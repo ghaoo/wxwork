@@ -10,7 +10,7 @@ import (
 	"path"
 )
 
-// 企业微信API接口基础网址
+// BaseURL 企业微信API接口基础网址
 const BaseURL = "https://qyapi.weixin.qq.com/cgi-bin/"
 
 // Agent 应用结构
