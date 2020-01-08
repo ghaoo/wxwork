@@ -3,6 +3,7 @@ package wxwork
 /******************************Event 事件格式*********************************/
 
 const (
+	// 消息回调事件定义
 	EVENT_TYPE_SUBSCRIBE            = "subscribe"            // 关注事件
 	EVENT_TYPE_UNSUBSCRIBE          = "unsubscribe"          // 取消关注
 	EVENT_TYPE_ENTER_AGENT          = "enter_agent"          // 进入应用
