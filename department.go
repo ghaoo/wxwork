@@ -7,10 +7,8 @@ import (
 	"strconv"
 )
 
-/**
- * 成员部门信息
- * - 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90204
- */
+// 成员部门信息
+// 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90204
 type Department struct {
 	// 部门id，32位整型，指定时必须大于1。若不填该参数，将自动生成id
 	ID int `json:"id,omitempty" xml:"Id"`

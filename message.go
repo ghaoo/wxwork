@@ -24,10 +24,8 @@ const (
 	MSG_TYPE_EVENT              = "event"              // 事件消息
 )
 
-/**
- * 消息推送
- * - 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90235
- */
+// 消息推送
+// 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90235
 type Message struct {
 	// 接收成员ID列表，“|”分隔,max:1000,全部成员:"@all"
 	ToUser string `json:"touser,omitempty"`

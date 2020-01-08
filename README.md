@@ -1,5 +1,5 @@
 # WXWork
-企业微信 SDK，文档见[godoc](https://godoc.org/github.com/ghaoo/wxwork)
+企业微信 SDK，文档见 [godoc](https://godoc.org/github.com/ghaoo/wxwork)
 
 ## TODO
 <details>

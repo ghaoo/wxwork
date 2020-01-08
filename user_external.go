@@ -1,9 +1,7 @@
 package wxwork
 
-/**
- * 成员对外信息
- * - 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/92230
- */
+// 成员对外信息
+// 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/92230
 type ExternalProfile struct {
 
 	// 企业对外简称，需从已认证的企业简称中选填。可在“我的企业”页中查看企业简称认证状态。
