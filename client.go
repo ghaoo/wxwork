@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"path"
 )
 
 // 企业微信API接口基础网址
@@ -119,20 +120,25 @@ func (a *Agent) Execute(method string, url string, body io.Reader, caller Caller
 }
 
 // ExecuteWithToken 在默认的http客户端执行一个http请求，并在请求中附带 AccessToken
-func (a *Agent) ExecuteWithToken(method string, path string, body io.Reader, caller Caller) error {
+func (a *Agent) ExecuteWithToken(method string, uri string, query url.Values, body io.Reader, caller Caller) error {
 
 	accessToken, err := a.GetAccessToken()
 	if err != nil {
 		return err
 	}
 
-	query := url.Values{}
+	if query == nil {
+		query = url.Values{}
+	}
+
 	query.Set("access_token", accessToken)
 
-	u, err := url.Parse(BaseURL + path)
+	u, err := url.Parse(BaseURL)
 	if err != nil {
 		panic(err)
 	}
+
+	u.Path = path.Join(u.Path, uri)
 
 	u.RawQuery = query.Encode()
 

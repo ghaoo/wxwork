@@ -102,7 +102,7 @@ func (a *Agent) SendMessage(msg *Message) (map[string][]string, error) {
 	var resp RespMessage
 
 	var invalid = make(map[string][]string, 3)
-	err := a.ExecuteWithToken("POST", "message/send", bytes.NewReader(body), &resp)
+	err := a.ExecuteWithToken("POST", "message/send", nil, bytes.NewReader(body), &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func (a *Agent) UpdateTaskcard(taskId, clickedKey string, userids []string) ([]s
 		Invaliduser []string `json:"invaliduser"`
 	}
 
-	err := a.ExecuteWithToken("POST", "message/update_taskcard", bytes.NewReader(body), &resp)
+	err := a.ExecuteWithToken("POST", "message/update_taskcard", nil, bytes.NewReader(body), &resp)
 
 	return resp.Invaliduser, err
 

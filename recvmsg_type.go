@@ -26,7 +26,7 @@ const (
 type RecvEvent struct {
 	Event    string `xml:"Event"`    // 事件类型
 	EventKey string `xml:"EventKey"` // 事件KEY值
-	
+
 	// 上报地理位置事件
 	Latitude  string `xml:"Latitude"`  // 地理位置纬度
 	Longitude string `xml:"Longitude"` // 地理位置经度
@@ -37,8 +37,7 @@ type RecvEvent struct {
 	JobType string `xml:"JobType"` // 操作类型
 	ErrCode int    `xml:"ErrCode"`
 	ErrMsg  string `xml:"ErrMsg"`
-	
+
 	// 通讯录变更事件
 	ChangeType string `xml:"ChangeType"`
 }
-

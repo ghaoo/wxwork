@@ -181,11 +181,11 @@ type TaskCardBtn struct {
 // NewTaskCardBtn 创建任务卡片按键
 func NewTaskCardBtn(key, name, rename, color string, isbold bool) TaskCardBtn {
 	return TaskCardBtn{
-		Key: key,
-		Name: name,
+		Key:         key,
+		Name:        name,
 		ReplaceName: rename,
-		Color: color,
-		IsBold: isbold,
+		Color:       color,
+		IsBold:      isbold,
 	}
 }
 

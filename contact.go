@@ -1,10 +1,15 @@
 package wxwork
 
+import (
+	"bytes"
+	"encoding/json"
+)
+
 /**
  * 成员信息:
  * 	 - 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90194
  */
-type Users struct {
+type Contact struct {
 	// 成员UserID。对应管理端的帐号，企业内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。
 	UserID string `json:"userid" xml:"UserID"`
 
@@ -63,3 +68,22 @@ type Users struct {
 	Status      int8   `json:"status,omitempty" xml:"status"`   // 激活状态: 1=已激活，2=已禁用，4=未激活。
 	baseCaller
 }
+
+// CreateContact 创建成员
+// 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90195
+func (a *Agent) CreateContact(contact *Contact) error {
+	body, _ := json.Marshal(contact)
+
+	var caller baseCaller
+	err := a.ExecuteWithToken("POST", "user/create", nil, bytes.NewReader(body), &caller)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// fetchContact 读取成员列表
+/*func (a *Agent) fetchContact() error {
+
+}*/

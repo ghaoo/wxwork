@@ -18,7 +18,7 @@ type Media struct {
 	CreatedAt string `json:"created_at"` // 上传时间戳
 }
 
-// MediaUpload 上传临时素材并获取素材信息
+// UploadMediaWithType 上传临时素材
 func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileInfo) (*Media, error) {
 
 	buffer := &bytes.Buffer{}
@@ -70,7 +70,10 @@ func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileIn
 	return media, nil
 }
 
-func (a *Agent) UploadMedia(file string) (*Media, error) {
+// MediaUpload 上传临时素材并获取素材信息
+// 参数 file 为素材位置
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90253
+func (a *Agent) MediaUpload(file string) (*Media, error) {
 	info, err := os.Stat(file)
 	if err != nil {
 		return nil, err
@@ -82,7 +85,7 @@ func (a *Agent) UploadMedia(file string) (*Media, error) {
 	}
 
 	var mediaType string
-	//var filename = strings.ToLower(info.Name())
+
 	switch filepath.Ext(info.Name()) {
 	case ".jpg", ".png":
 		mediaType = "image"
