@@ -16,8 +16,12 @@ type Cache interface {
 	Remove(key string) error
 }
 
-const DefaultBoltDBFile = `.data/wework/db/wework.db` // 默认缓存文件
-const DefaultBoltBucket = `wework`                    // 默认缓存 Bucket
+const (
+	// 默认缓存文件
+	DefaultBoltDBFile = `.data/wework/db/wework.db`
+	// 默认缓存 Bucket
+	DefaultBoltBucket = `wework`
+)
 
 // boltCache bolt 缓存器
 type boltCache struct {
