@@ -26,7 +26,7 @@ type Department struct {
 
 // CreateDepartment 创建部门
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90205
-func (a *Agent) CreateDepartment(dept *Department) (int, error) {
+func (a *Agent) CreateDepartment(dept map[string]interface{}) (int, error) {
 	body, _ := json.Marshal(dept)
 
 	var caller struct {
@@ -40,7 +40,7 @@ func (a *Agent) CreateDepartment(dept *Department) (int, error) {
 
 // UpdateDepartment 更新部门
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90206
-func (a *Agent) UpdateDepartment(dept *Department) error {
+func (a *Agent) UpdateDepartment(dept map[string]interface{}) error {
 	body, _ := json.Marshal(dept)
 
 	var caller baseCaller
