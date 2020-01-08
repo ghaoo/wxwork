@@ -30,7 +30,7 @@ const (
  */
 type Message struct {
 	// 接收成员ID列表，“|”分隔,max:1000,全部成员:"@all"
-	ToUser string `json:"touser"`
+	ToUser string `json:"touser,omitempty"`
 
 	// 接收部门ID列表，“|”分隔,max:100
 	ToParty string `json:"toparty,omitempty"`
@@ -39,10 +39,10 @@ type Message struct {
 	ToTag string `json:"totag,omitempty"`
 
 	// 消息类型
-	MsgType string `json:"msgtype"`
+	MsgType string `json:"msgtype,omitempty"`
 
 	// 企业应用ID
-	AgentID int `json:"agentid"`
+	AgentID int `json:"agentid,omitempty"`
 
 	// 是否是保密消息，0表示否，1表示是，默认0
 	Safe int8 `json:"safe,omitempty"`

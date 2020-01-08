@@ -13,9 +13,9 @@ import (
 
 type Media struct {
 	baseCaller
-	Type      string `json:"type"`       // 文件类型,image、voice、video、file
-	MediaId   string `json:"media_id"`   // 唯一标识，3天内有效
-	CreatedAt string `json:"created_at"` // 上传时间戳
+	Type      string `json:"type,omitempty"`       // 文件类型,image、voice、video、file
+	MediaId   string `json:"media_id,omitempty"`   // 唯一标识，3天内有效
+	CreatedAt string `json:"created_at,omitempty"` // 上传时间戳
 }
 
 // UploadMediaWithType 上传临时素材

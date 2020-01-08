@@ -50,15 +50,19 @@ func (a *Agent) SetCallback(token, encodingAESKey string) *Agent {
 	return a
 }
 
-func NewAgent(corpid, secret string, agentid int) *Agent {
+func NewAgent(corpid string, agentid int) *Agent {
 
 	return &Agent{
 		CorpID:      corpid,
 		AgentID:     agentid,
-		Secret:      secret,
 		AccessToken: new(AccessToken),
 		client:      &http.Client{},
 	}
+}
+
+func (a *Agent) WithSecret(secret string) *Agent {
+	a.Secret = secret
+	return a
 }
 
 // SetCache 设置缓存处理器

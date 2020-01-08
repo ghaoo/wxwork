@@ -13,9 +13,9 @@ import (
  */
 type Department struct {
 	// 部门id，32位整型，指定时必须大于1。若不填该参数，将自动生成id
-	ID int `json:"id" xml:"Id"`
+	ID int `json:"id,omitempty" xml:"Id"`
 	// 部门名称。长度限制为1~32个字符，字符不能包括\:?”<>｜
-	Name string `json:"name" xml:"Name"`
+	Name string `json:"name,omitempty" xml:"Name"`
 	// 英文名称，需要在管理后台开启多语言支持才能生效。长度限制为1~32个字符，字符不能包括\:?”<>｜
 	NameEn string `json:"name_en,omitempty"`
 	// 父部门id，32位整型

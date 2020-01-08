@@ -11,10 +11,10 @@ import (
  */
 type Contact struct {
 	// 成员UserID。对应管理端的帐号，企业内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。
-	UserID string `json:"userid" xml:"UserID"`
+	UserID string `json:"userid,omitempty" xml:"UserID"`
 
 	// 成员名称。长度为1~64个utf8字符
-	Name string `json:"name" xml:"Name"`
+	Name string `json:"name,omitempty" xml:"Name"`
 
 	// 成员别名。长度1~32个utf8字符
 	Alias string `json:"alias,omitempty" xml:"Alias"`
