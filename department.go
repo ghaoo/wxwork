@@ -36,11 +36,8 @@ func (a *Agent) CreateDepartment(dept *Department) (int, error) {
 		ID int `json:"id"`
 	}
 	err := a.ExecuteWithToken("POST", "department/create", nil, bytes.NewReader(body), &caller)
-	if err != nil {
-		return 0, err
-	}
 
-	return caller.ID, nil
+	return caller.ID, err
 }
 
 // UpdateDepartment 更新部门
@@ -49,12 +46,7 @@ func (a *Agent) UpdateDepartment(dept *Department) error {
 	body, _ := json.Marshal(dept)
 
 	var caller baseCaller
-	err := a.ExecuteWithToken("POST", "department/update", nil, bytes.NewReader(body), &caller)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return a.ExecuteWithToken("POST", "department/update", nil, bytes.NewReader(body), &caller)
 }
 
 // DeleteDepartment 删除部门
@@ -63,12 +55,7 @@ func (a *Agent) DeleteDepartment(id int) error {
 	var caller baseCaller
 	query := url.Values{}
 	query.Set("id", strconv.Itoa(id))
-	err := a.ExecuteWithToken("GET", "department/delete", query, nil, &caller)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return a.ExecuteWithToken("GET", "department/delete", query, nil, &caller)
 }
 
 // 获取部门列表
