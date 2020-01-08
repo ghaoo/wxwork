@@ -104,14 +104,7 @@ func (a *Agent) GetTag(id int) (*Tag, error) {
 	return tag, nil
 }
 
-// AddTagUsers 增加标签成员
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90214
-func (a *Agent) AddTagUsers(id int, users []string, parties []int) (invalidlist string, invalidparty []int, err error) {
-	tag := &Tag{
-		TagID:     id,
-		UserList:  users,
-		PartyList: parties,
-	}
+func (a *Agent) addOrDelTagUsers(path string, tag Tag) (invalidlist string, invalidparty []int, err error) {
 	body, _ := json.Marshal(tag)
 
 	var caller struct {
@@ -120,7 +113,43 @@ func (a *Agent) AddTagUsers(id int, users []string, parties []int) (invalidlist 
 		InvalidParty []int  `json:"invalidparty,omitempty"`
 	}
 
-	err = a.ExecuteWithToken("POST", "tag/addtagusers", nil, bytes.NewReader(body), &caller)
+	err = a.ExecuteWithToken("POST", path, nil, bytes.NewReader(body), &caller)
 
 	return caller.InvalidList, caller.InvalidParty, err
+}
+
+// AddTagUsers 增加标签成员
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90214
+func (a *Agent) AddTagUsers(id int, users []string, parties []int) (invalidlist string, invalidparty []int, err error) {
+	tag := Tag{
+		TagID:     id,
+		UserList:  users,
+		PartyList: parties,
+	}
+
+	return a.addOrDelTagUsers("tag/addtagusers", tag)
+}
+
+// DelTagUsers 删除标签成员
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90215
+func (a *Agent) DelTagUsers(id int, users []string, parties []int) (invalidlist string, invalidparty []int, err error) {
+	tag := Tag{
+		TagID:     id,
+		UserList:  users,
+		PartyList: parties,
+	}
+	return a.addOrDelTagUsers("tag/deltagusers", tag)
+}
+
+// ListTags 获取标签列表
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90216
+func (a *Agent) ListTags() ([]Tag, error) {
+
+	var caller struct {
+		baseCaller
+		Taglist []Tag
+	}
+
+	err := a.ExecuteWithToken("GET", "tag/list", nil, nil, &caller)
+	return caller.Taglist, err
 }
