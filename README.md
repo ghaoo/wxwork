@@ -1,4 +1,4 @@
-# WXWork [![GoDoc](https://godoc.org/github.com/ghaoo/wxwork?status.svg)](https://godoc.org/github.com/ghaoo/wxwork)
+# WXWork [![GoDoc](https://godoc.org/github.com/ghaoo/wxwork?status.svg)](https://godoc.org/github.com/ghaoo/wxwork) [![Go Report Card](https://goreportcard.com/badge/github.com/ghaoo/wxwork)](https://goreportcard.com/report/github.com/ghaoo/wxwork)
 企业微信 SDK，文档见 [godoc](https://godoc.org/github.com/ghaoo/wxwork)
 
 ## TODO
