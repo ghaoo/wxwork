@@ -63,10 +63,11 @@ func NewAgent(corpid string, agentid int) *Agent {
 	}
 }
 
-// WithSecret 添加secret，
+// WithSecret 返回添加了secret的应用
 func (a *Agent) WithSecret(secret string) *Agent {
-	a.Secret = secret
-	return a
+	agent := NewAgent(a.CorpID, a.AgentID)
+	agent.Secret = secret
+	return agent
 }
 
 // SetCache 设置缓存处理器
