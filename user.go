@@ -130,14 +130,14 @@ func (a *Agent) BatchDeleteUsers(ids ...string) error {
 	return a.ExecuteWithToken("POST", "user/batchdelete", nil, bytes.NewReader(body), &caller)
 }
 
-func (a *Agent) userList(deptId int, fetchChild ...bool) ([]User, error) {
+func (a *Agent) userList(simple bool, deptId int, fetchChild ...bool) ([]User, error) {
 	var caller struct {
 		baseCaller
 		UserList []User `json:"userlist"`
 	}
 
 	query := url.Values{}
-	query.Set("userid", strconv.Itoa(deptId))
+	query.Set("department_id", strconv.Itoa(deptId))
 
 	child := "0"
 	if len(fetchChild) > 0 {
@@ -146,7 +146,12 @@ func (a *Agent) userList(deptId int, fetchChild ...bool) ([]User, error) {
 
 	query.Set("fetch_child", child)
 
-	err := a.ExecuteWithToken("GET", "user/simplelist", query, nil, &caller)
+	path := "user/simplelist"
+	if !simple {
+		path = "user/list"
+	}
+
+	err := a.ExecuteWithToken("GET", path, query, nil, &caller)
 
 	return caller.UserList, err
 }
@@ -154,13 +159,13 @@ func (a *Agent) userList(deptId int, fetchChild ...bool) ([]User, error) {
 // SimpleListUser 获取部门成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90200
 func (a *Agent) SimpleListUser(deptId int, fetchChild ...bool) ([]User, error) {
-	return a.userList(deptId, fetchChild...)
+	return a.userList(true, deptId, fetchChild...)
 }
 
 // ListUser 获取部门成员详情
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90201
 func (a *Agent) ListUser(deptId int, fetchChild ...bool) ([]User, error) {
-	return a.userList(deptId, fetchChild...)
+	return a.userList(false, deptId, fetchChild...)
 }
 
 // UserIDConvertToOpenID userid转openid
