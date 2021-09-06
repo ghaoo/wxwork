@@ -81,10 +81,10 @@ func (a *Agent) CreateUser(user *User) error {
 
 // GetUser 读取成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90196
-func (a *Agent) GetUser(id string) (*User, error) {
+func (a *Agent) GetUser(id string) (User, error) {
 	var caller struct {
 		baseCaller
-		*User
+		User
 	}
 
 	query := url.Values{}
@@ -227,12 +227,12 @@ func (a *Agent) BatchInvite(user []string, party, tag []int) (invaliduser []stri
 		baseCaller
 		Invaliduser  []string `json:"invaliduser"`
 		Invalidparty []int    `json:"invalidparty"`
-		invalidTag   []int    `json:"invalidtag"`
+		InvalidTag   []int    `json:"invalidtag"`
 	}
 
 	err = a.ExecuteWithToken("POST", "user/convert_to_userid", nil, bytes.NewReader(body), &caller)
 
-	return caller.Invaliduser, caller.Invalidparty, caller.invalidTag, err
+	return caller.Invaliduser, caller.Invalidparty, caller.InvalidTag, err
 }
 
 // GetJoinQrCode 获取加入企业二维码

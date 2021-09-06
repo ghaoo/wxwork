@@ -31,11 +31,14 @@ func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileIn
 		return nil, err
 	}
 
-	fw.Write(buf)
+	_, err = fw.Write(buf)
+	if err != nil {
+		return nil, err
+	}
 
-	writer.WriteField("filename", info.Name())
-	writer.WriteField("filelength", strconv.FormatInt(info.Size(), 10))
-	writer.Close()
+	_ = writer.WriteField("filename", info.Name())
+	_ = writer.WriteField("filelength", strconv.FormatInt(info.Size(), 10))
+	_ = writer.Close()
 
 	accessToken, err := a.GetAccessToken()
 	if err != nil {
