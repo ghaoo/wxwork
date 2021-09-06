@@ -24,34 +24,15 @@ type Agent struct {
 	// AccessToken 应用登录凭证
 	AccessToken *AccessToken
 
-	Cache    Cache
-	callback *Callback
+	Cache Cache
+	crypt *wxbizmsgcrypt.WXBizMsgCrypt
 
 	client *http.Client
 }
 
-// Callback 应用回调配置，需加密
-type Callback struct {
-	// 企业应用接收企业微信推送请求的访问协议和地址，支持http或https协议
-	URL string `json:"url" xml:"url"`
-	// 用于生成签名
-	Token string `json:"token" xml:"token"`
-	// 用于消息体的加密，是AES密钥的Base64编码
-	EncodingAESKey string `json:"encodingaeskey" xml:"encodingaeskey"`
-
-	crypt *wxbizmsgcrypt.WXBizMsgCrypt
-}
-
-// SetCallback 设置回调参数
-func (a *Agent) SetCallback(token, encodingAESKey string) *Agent {
-	callback := &Callback{
-		Token:          token,
-		EncodingAESKey: encodingAESKey,
-	}
-
-	callback.crypt = wxbizmsgcrypt.NewWXBizMsgCrypt(token, encodingAESKey, a.CorpID, wxbizmsgcrypt.XmlType)
-
-	a.callback = callback
+// SetMsgCrypt 设置消息加密认证
+func (a *Agent) SetMsgCrypt(token, encodingAESKey string) *Agent {
+	a.crypt = wxbizmsgcrypt.NewWXBizMsgCrypt(token, encodingAESKey, a.CorpID, wxbizmsgcrypt.XmlType)
 
 	return a
 }

@@ -40,7 +40,7 @@ type RecvMessage struct {
 
 // ParseRecvMessage 解析接收到的消息
 func (a *Agent) ParseRecvMessage(signature, timestamp, nonce string, data []byte) (recv RecvMessage, err error) {
-	msg, cryptErr := a.callback.crypt.DecryptMsg(signature, timestamp, nonce, data)
+	msg, cryptErr := a.crypt.DecryptMsg(signature, timestamp, nonce, data)
 	if nil != cryptErr {
 		return recv, fmt.Errorf("DecryptMsg fail: %v", cryptErr)
 	}
@@ -59,7 +59,7 @@ func (a *Agent) CallbackVerify(w http.ResponseWriter, r *http.Request) {
 	verifyNonce := query.Get("nonce")
 	verifyEchoStr := query.Get("echostr")
 
-	echoStr, cryptErr := a.callback.crypt.VerifyURL(verifySignature, verifyTimestamp, verifyNonce, verifyEchoStr)
+	echoStr, cryptErr := a.crypt.VerifyURL(verifySignature, verifyTimestamp, verifyNonce, verifyEchoStr)
 
 	if nil != cryptErr {
 		log.Println("verifyUrl fail", cryptErr)
