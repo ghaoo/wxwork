@@ -1,6 +1,6 @@
 package wxwork
 
-// Callback 应用回调配置，需加密
+// Callback 应用回调，需加密
 type Callback struct {
 	// 企业应用接收企业微信推送请求的访问协议和地址，支持http或https协议
 	URL string `json:"url,omitempty" xml:"url,omitempty"`
