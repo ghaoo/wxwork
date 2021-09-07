@@ -60,7 +60,7 @@ func (a *Agent) SetDebug(debug bool) *Agent {
 
 // WithSecret 返回添加了secret的应用
 func (a *Agent) WithSecret(secret string) *Agent {
-	agent := NewAgent(a.corpID, a.agentID)
+	agent := NewAgent(a.corpID, a.agentID).SetDebug(a.debug)
 	agent.secret = secret
 	return agent
 }
