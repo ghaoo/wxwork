@@ -16,17 +16,17 @@ const BaseURL = "https://qyapi.weixin.qq.com/cgi-bin/"
 // Agent 应用结构
 type Agent struct {
 	// 企业ID
-	CorpID string
-	// AgentID 应用ID
-	AgentID int
-	// Secret 应用秘钥
-	Secret string
-	// AccessToken 应用登录凭证
-	AccessToken *AccessToken
+	corpID string
+	// agentID 应用ID
+	agentID int
+	// secret 应用秘钥
+	secret string
+	// accessToken 应用登录凭证
+	accessToken *AccessToken
 	// 是否开启Debug
-	Debug bool
+	debug bool
 
-	Cache Cache
+	cache Cache
 	crypt *wxbizmsgcrypt.WXBizMsgCrypt
 
 	client *http.Client
@@ -34,7 +34,7 @@ type Agent struct {
 
 // SetMsgCrypt 设置消息加密认证
 func (a *Agent) SetMsgCrypt(token, encodingAESKey string) *Agent {
-	a.crypt = wxbizmsgcrypt.NewWXBizMsgCrypt(token, encodingAESKey, a.CorpID, wxbizmsgcrypt.XmlType)
+	a.crypt = wxbizmsgcrypt.NewWXBizMsgCrypt(token, encodingAESKey, a.corpID, wxbizmsgcrypt.XmlType)
 
 	return a
 }
@@ -43,10 +43,10 @@ func (a *Agent) SetMsgCrypt(token, encodingAESKey string) *Agent {
 func NewAgent(corpid string, agentid int) *Agent {
 
 	return &Agent{
-		CorpID:      corpid,
-		AgentID:     agentid,
-		AccessToken: new(AccessToken),
-		Debug:       false,
+		corpID:      corpid,
+		agentID:     agentid,
+		accessToken: new(AccessToken),
+		debug:       false,
 		client:      &http.Client{},
 	}
 }
@@ -54,20 +54,20 @@ func NewAgent(corpid string, agentid int) *Agent {
 // SetDebug 开启debug模式调用接口
 // 注意: debug模式有使用频率限制，同一个api每分钟不能超过5次，所以在完成调试之后，请记得关掉debug。
 func (a *Agent) SetDebug(debug bool) *Agent {
-	a.Debug = debug
+	a.debug = debug
 	return a
 }
 
 // WithSecret 返回添加了secret的应用
 func (a *Agent) WithSecret(secret string) *Agent {
-	agent := NewAgent(a.CorpID, a.AgentID)
-	agent.Secret = secret
+	agent := NewAgent(a.corpID, a.agentID)
+	agent.secret = secret
 	return agent
 }
 
 // SetCache 设置缓存处理器
 func (a *Agent) SetCache(cache Cache) *Agent {
-	a.Cache = cache
+	a.cache = cache
 
 	return a
 }
@@ -141,7 +141,7 @@ func (a *Agent) ExecuteWithToken(method string, uri string, query url.Values, bo
 
 	query.Set("access_token", accessToken)
 
-	if a.Debug {
+	if a.debug {
 		query.Set("debug", "1")
 	}
 

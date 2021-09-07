@@ -24,11 +24,11 @@ func (token *AccessToken) IsExpire() bool {
 
 // RefreshAccessToken 用于刷新 access_token
 func (a *Agent) RefreshAccessToken() error {
-	a.AccessToken.mu.Lock()
-	defer a.AccessToken.mu.Unlock()
+	a.accessToken.mu.Lock()
+	defer a.accessToken.mu.Unlock()
 
 	var token AccessToken
-	path := fmt.Sprintf("%sgettoken?corpid=%s&corpsecret=%s", BaseURL, a.CorpID, a.Secret)
+	path := fmt.Sprintf("%sgettoken?corpid=%s&corpsecret=%s", BaseURL, a.corpID, a.secret)
 
 	err := a.Execute("GET", path, nil, &token)
 	if err != nil {
@@ -36,11 +36,11 @@ func (a *Agent) RefreshAccessToken() error {
 	}
 
 	token.ExpireAt = time.Now().Add(time.Duration(token.ExpiresIn) * time.Second)
-	a.AccessToken = &token
+	a.accessToken = &token
 
-	if a.Cache != nil {
-		bt, _ := json.Marshal(token)
-		a.Cache.Set("access_token", bt)
+	if a.cache != nil {
+		bt, _ := json.Marshal(&token)
+		a.cache.Set("access_token", bt)
 	}
 
 	return nil
@@ -48,31 +48,31 @@ func (a *Agent) RefreshAccessToken() error {
 
 // getAccessTokenFromCache 从缓存中获取 access_token
 func (a *Agent) getAccessTokenFromCache() (string, error) {
-	if a.Cache == nil {
+	if a.cache == nil {
 		return "", fmt.Errorf("client cache processor not found")
 	}
 
-	accessToken := a.Cache.Get("access_token")
-	err := json.Unmarshal(accessToken, &a.AccessToken)
+	accessToken := a.cache.Get("access_token")
+	err := json.Unmarshal(accessToken, &a.accessToken)
 
-	if a.AccessToken.IsExpire() || a.AccessToken.AccessToken == "" {
+	if a.accessToken.IsExpire() || a.accessToken.AccessToken == "" {
 		err = a.RefreshAccessToken()
 	}
 
-	return a.AccessToken.AccessToken, err
+	return a.accessToken.AccessToken, err
 
 }
 
 // GetAccessToken 获取access_token
 func (a *Agent) GetAccessToken() (string, error) {
 	// 如果设置了 缓存器，从缓存器中获取 token，防止频繁刷新
-	if a.Cache != nil {
+	if a.cache != nil {
 		return a.getAccessTokenFromCache()
 	}
 
 	var err error
-	if a.AccessToken.IsExpire() {
+	if a.accessToken.IsExpire() {
 		err = a.RefreshAccessToken()
 	}
-	return a.AccessToken.AccessToken, err
+	return a.accessToken.AccessToken, err
 }

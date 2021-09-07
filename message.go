@@ -106,7 +106,7 @@ type RespMessage struct {
 
 // SendMessage 用于消息推送-发送应用消息，返回接收失败用户、组织、标签列表
 func (a *Agent) SendMessage(msg *Message) (map[string][]string, error) {
-	msg.AgentID = a.AgentID
+	msg.AgentID = a.agentID
 
 	body, _ := json.Marshal(msg)
 
@@ -128,7 +128,7 @@ func (a *Agent) SendMessage(msg *Message) (map[string][]string, error) {
 func (a *Agent) UpdateTaskcard(taskId, clickedKey string, userids []string) ([]string, error) {
 	request := map[string]interface{}{
 		"userids":     userids,
-		"agentid":     a.AgentID,
+		"agentid":     a.agentID,
 		"task_id":     taskId,
 		"clicked_key": clickedKey,
 	}
