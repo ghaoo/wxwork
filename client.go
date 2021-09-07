@@ -23,6 +23,8 @@ type Agent struct {
 	Secret string
 	// AccessToken 应用登录凭证
 	AccessToken *AccessToken
+	// 是否开启Debug
+	Debug bool
 
 	Cache Cache
 	crypt *wxbizmsgcrypt.WXBizMsgCrypt
@@ -44,8 +46,16 @@ func NewAgent(corpid string, agentid int) *Agent {
 		CorpID:      corpid,
 		AgentID:     agentid,
 		AccessToken: new(AccessToken),
+		Debug:       false,
 		client:      &http.Client{},
 	}
+}
+
+// SetDebug 开启debug模式调用接口
+// 注意: debug模式有使用频率限制，同一个api每分钟不能超过5次，所以在完成调试之后，请记得关掉debug。
+func (a *Agent) SetDebug(debug bool) *Agent {
+	a.Debug = debug
+	return a
 }
 
 // WithSecret 返回添加了secret的应用
@@ -130,6 +140,10 @@ func (a *Agent) ExecuteWithToken(method string, uri string, query url.Values, bo
 	}
 
 	query.Set("access_token", accessToken)
+
+	if a.Debug {
+		query.Set("debug", "1")
+	}
 
 	u, err := url.Parse(BaseURL)
 	if err != nil {
