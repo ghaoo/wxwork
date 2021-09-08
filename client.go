@@ -3,11 +3,12 @@ package wxwork
 import (
 	"encoding/json"
 	"errors"
-	"github.com/sbzhu/weworkapi_golang/wxbizmsgcrypt"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
+
+	"github.com/sbzhu/weworkapi_golang/wxbizmsgcrypt"
 )
 
 // BaseURL 企业微信API接口基础网址
@@ -56,10 +57,6 @@ func NewAgent(corpid string, agentid int) *Agent {
 func (a *Agent) SetDebug(debug bool) *Agent {
 	a.debug = debug
 	return a
-}
-
-func (a *Agent) GetAgentID() int {
-	return a.agentID
 }
 
 // WithSecret 返回添加了secret的应用
