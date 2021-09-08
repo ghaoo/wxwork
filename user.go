@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"strconv"
-	"strings"
+	"time"
 )
 
 // User 成员信息:
@@ -123,7 +123,11 @@ func (a *Agent) BatchDeleteUsers(ids ...string) error {
 		return nil
 	}
 
-	body, _ := json.Marshal(ids)
+	useridlist := map[string][]string{
+		"useridlist": ids,
+	}
+
+	body, _ := json.Marshal(useridlist)
 
 	var caller baseCaller
 
@@ -140,7 +144,7 @@ func (a *Agent) userList(simple bool, deptId int, fetchChild ...bool) ([]User, e
 	query.Set("department_id", strconv.Itoa(deptId))
 
 	child := "0"
-	if len(fetchChild) > 0 {
+	if len(fetchChild) > 0 && fetchChild[0] {
 		child = "1"
 	}
 
@@ -177,7 +181,12 @@ func (a *Agent) UserIDConvertToOpenID(userid string) (string, error) {
 		Openid string `json:"openid"`
 	}
 
-	err := a.ExecuteWithToken("POST", "user/convert_to_openid", nil, strings.NewReader(userid), &caller)
+	param := map[string]string{
+		"userid": userid,
+	}
+	body, _ := json.Marshal(param)
+
+	err := a.ExecuteWithToken("POST", "user/convert_to_openid", nil, bytes.NewReader(body), &caller)
 
 	return caller.Openid, err
 }
@@ -191,7 +200,12 @@ func (a *Agent) OpenIDConvertToUserID(openid string) (string, error) {
 		Userid string `json:"userid"`
 	}
 
-	err := a.ExecuteWithToken("POST", "user/convert_to_userid", nil, strings.NewReader(openid), &caller)
+	param := map[string]string{
+		"openid": openid,
+	}
+	body, _ := json.Marshal(param)
+
+	err := a.ExecuteWithToken("POST", "user/convert_to_userid", nil, bytes.NewReader(body), &caller)
 
 	return caller.Userid, err
 }
@@ -209,7 +223,7 @@ func (a *Agent) UserAuthSuccess(code string) error {
 
 	var caller baseCaller
 
-	return a.ExecuteWithToken("GET", "user/getuserinfo", query, nil, &caller)
+	return a.ExecuteWithToken("GET", "user/authsucc", query, nil, &caller)
 }
 
 // BatchInvite 邀请成员使用企业微信
@@ -230,7 +244,7 @@ func (a *Agent) BatchInvite(user []string, party, tag []int) (invaliduser []stri
 		InvalidTag   []int    `json:"invalidtag"`
 	}
 
-	err = a.ExecuteWithToken("POST", "user/convert_to_userid", nil, bytes.NewReader(body), &caller)
+	err = a.ExecuteWithToken("POST", "batch/invite", nil, bytes.NewReader(body), &caller)
 
 	return caller.Invaliduser, caller.Invalidparty, caller.InvalidTag, err
 }
@@ -247,7 +261,27 @@ func (a *Agent) GetJoinQrCode(size string) (string, error) {
 		JoinQrCode string `json:"join_qrcode"`
 	}
 
-	err := a.ExecuteWithToken("GET", "user/get_join_qrcode", query, nil, &caller)
+	err := a.ExecuteWithToken("GET", "corp/get_join_qrcode", query, nil, &caller)
 
 	return caller.JoinQrCode, err
+}
+
+// GetActiveStat 获取企业活跃成员数
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92714
+func (a *Agent) GetActiveStat(date time.Time) (int, error) {
+	params := map[string]string{
+		"date": date.Format("2006-01-02"),
+	}
+
+	body, _ := json.Marshal(params)
+
+	var caller struct {
+		baseCaller
+		ActiveCnt int `json:"active_cnt"`
+	}
+
+	err := a.ExecuteWithToken("POST", "user/get_active_stat", nil, bytes.NewReader(body), &caller)
+
+	return caller.ActiveCnt, err
+
 }
