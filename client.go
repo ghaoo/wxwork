@@ -58,6 +58,10 @@ func (a *Agent) SetDebug(debug bool) *Agent {
 	return a
 }
 
+func (a *Agent) GetAgentID() int {
+	return a.agentID
+}
+
 // WithSecret 返回添加了secret的应用
 func (a *Agent) WithSecret(secret string) *Agent {
 	agent := NewAgent(a.corpID, a.agentID).SetDebug(a.debug)
