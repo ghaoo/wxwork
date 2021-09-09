@@ -1,3 +1,6 @@
+## 配置rboot机器人
+[文档](https://www.kancloud.cn/ghaoo/rboot/1476890)
+
 ## ssh + nginx 内网穿透
 
 ### 在可以访问外网的服务器安装 Nginx
