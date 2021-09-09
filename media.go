@@ -21,19 +21,19 @@ type Media struct {
 }
 
 // UploadMediaWithType 上传临时素材
-func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileInfo) (*Media, error) {
+func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileInfo) (media Media, err error) {
 
 	buffer := &bytes.Buffer{}
 	writer := multipart.NewWriter(buffer)
 
 	fw, err := writer.CreateFormFile("media", info.Name())
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	_, err = fw.Write(buf)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	_ = writer.WriteField("filename", info.Name())
@@ -42,7 +42,7 @@ func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileIn
 
 	accessToken, err := a.GetAccessToken()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	query := url.Values{}
@@ -51,25 +51,23 @@ func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileIn
 
 	u, err := url.Parse(BaseURL + "media/upload")
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	u.RawQuery = query.Encode()
 
 	resp, err := a.client.Post(u.String(), writer.FormDataContentType(), buffer)
 	if err != nil {
-		return nil, err
+		return
 	}
 	defer resp.Body.Close()
 
-	media := &Media{}
-
 	if err = json.NewDecoder(resp.Body).Decode(&media); err != nil {
-		return nil, err
+		return
 	}
 
 	if !media.Success() {
-		return nil, media.Error()
+		return media, media.Error()
 	}
 
 	return media, nil
@@ -78,15 +76,15 @@ func (a *Agent) UploadMediaWithType(mediaType string, buf []byte, info os.FileIn
 // MediaUpload 上传临时素材并获取素材信息
 // 参数 file 为素材位置
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90253
-func (a *Agent) MediaUpload(file string) (*Media, error) {
+func (a *Agent) MediaUpload(file string) (media Media, err error) {
 	info, err := os.Stat(file)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	var mediaType string
@@ -100,7 +98,6 @@ func (a *Agent) MediaUpload(file string) (*Media, error) {
 		mediaType = "video"
 	default:
 		mediaType = "file"
-
 	}
 
 	return a.UploadMediaWithType(mediaType, buf, info)
