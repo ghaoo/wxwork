@@ -131,7 +131,12 @@ func (pay *payload) simpleListUser(depId string) []*rboot.Message {
 	fname := "department-" + depId + ".simple.json"
 	fpath := storeResult(fname, data)
 
-	return rboot.NewMessages(fmt.Sprintf("获取部门成员成功，文件位置: %s", fpath))
+	msg := rboot.NewMessage(fmt.Sprintf("获取部门成员成功，文件位置: %s", fpath))
+	msg.Header.Set("msgtype", "file")
+	msg.Header.Set("file", fpath)
+
+	return []*rboot.Message{msg}
+
 }
 
 // simpleListUser 获取部门成员详情
@@ -149,7 +154,11 @@ func (pay *payload) listUser(depId string) []*rboot.Message {
 	fname := "department-" + depId + ".info.json"
 	fpath := storeResult(fname, data)
 
-	return rboot.NewMessages(fmt.Sprintf("获取部门成员详情成功，文件位置: %s", fpath))
+	msg := rboot.NewMessage(fmt.Sprintf("获取部门成员详情成功，文件位置: %s", fpath))
+	msg.Header.Set("msgtype", "file")
+	msg.Header.Set("file", fpath)
+
+	return []*rboot.Message{msg}
 }
 
 // useridToOpenid userid转openid
