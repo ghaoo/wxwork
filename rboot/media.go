@@ -24,3 +24,32 @@ func (pay *payload) uploadImg(file string) []*rboot.Message {
 
 	return rboot.NewMessages(fmt.Sprintf("[点击查看图片](%s)", picUrl))
 }
+
+func (pay *payload) mediaSetup(bot *rboot.Robot, in *rboot.Message) []*rboot.Message {
+	rule := in.Header.Get("rule")
+	args := in.Header["args"]
+
+	switch rule {
+	case `media_upload`:
+		return pay.mediaUpload(args[1])
+	case `media_img`:
+		return pay.uploadImg(args[1])
+	}
+
+	return nil
+}
+
+func (pay *payload) mediaPlugin() rboot.Plugin {
+	return rboot.Plugin{
+		Action: pay.mediaSetup,
+		Ruleset: map[string]string{
+			`media_upload`: `^!media upload (.+)`,
+			`media_img`:    `^!media img (.+)`,
+		},
+		Usage: map[string]string{
+			"!media upload [文件]": "上传临时素材!",
+			"!media img [文件]":    "上传图片!",
+		},
+		Description: `企业微信媒体管理SDK示例和测试`,
+	}
+}
