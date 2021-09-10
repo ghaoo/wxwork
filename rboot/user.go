@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-// createUser 创建企业成员
-func (pay *payload) createUser(name, mobile, department string) []*rboot.Message {
+// userCreate 创建企业成员
+func (pay *payload) userCreate(name, mobile, department string) []*rboot.Message {
 	userId := RandomCreateBytes(6)
 
 	dID, err := strconv.Atoi(department)
@@ -37,8 +37,8 @@ func (pay *payload) createUser(name, mobile, department string) []*rboot.Message
 	return rboot.NewMessages(fmt.Sprintf("创建成员成功，成员ID: %s, 请前往企业微信后台查看", userId))
 }
 
-// getUser 获取成员信息
-func (pay *payload) getUser(uid string) []*rboot.Message {
+// userGet 获取成员信息
+func (pay *payload) userGet(uid string) []*rboot.Message {
 	client := pay.client.WithSecret(os.Getenv("WORKWX_CONTACT_SECRET"))
 
 	user, err := client.GetUser(uid)
@@ -72,9 +72,9 @@ func (pay *payload) getUser(uid string) []*rboot.Message {
 	return rboot.NewMessages(fmt.Sprintf("成员基础信息: \n%s", info))
 }
 
-// updateUser 更新成员
+// userUpdate 更新成员
 // 示例更新成员名称，更新其他参数类似
-func (pay *payload) updateUser(uid, name string) []*rboot.Message {
+func (pay *payload) userUpdate(uid, name string) []*rboot.Message {
 	client := pay.client.WithSecret(os.Getenv("WORKWX_CONTACT_SECRET"))
 
 	// 组织更新参数
@@ -90,8 +90,8 @@ func (pay *payload) updateUser(uid, name string) []*rboot.Message {
 	return rboot.NewMessages(fmt.Sprintf("更新成员成功，成员ID: %s, 请前往企业微信后台查看", uid))
 }
 
-// deleteUser 删除成员
-func (pay *payload) deleteUser(uid string) []*rboot.Message {
+// userDelete 删除成员
+func (pay *payload) userDelete(uid string) []*rboot.Message {
 	client := pay.client.WithSecret(os.Getenv("WORKWX_CONTACT_SECRET"))
 
 	err := client.DeleteUser(uid)
@@ -102,8 +102,8 @@ func (pay *payload) deleteUser(uid string) []*rboot.Message {
 	return rboot.NewMessages(fmt.Sprintf("删除成员成功，成员ID: %s, 请前往企业微信后台查看", uid))
 }
 
-// batchDeleteUsers 批量删除成员
-func (pay *payload) batchDeleteUsers(uids string) []*rboot.Message {
+// usersBatchDelete 批量删除成员
+func (pay *payload) userBatchDelete(uids string) []*rboot.Message {
 	uid := strings.Split(uids, ",")
 
 	client := pay.client.WithSecret(os.Getenv("WORKWX_CONTACT_SECRET"))
@@ -116,8 +116,8 @@ func (pay *payload) batchDeleteUsers(uids string) []*rboot.Message {
 	return rboot.NewMessages(fmt.Sprintf("批量删除成员成功，成员ID: %s, 请前往企业微信后台查看", uid))
 }
 
-// simpleListUser 获取部门成员
-func (pay *payload) simpleListUser(depId string) []*rboot.Message {
+// userSimpleList 获取部门成员
+func (pay *payload) userSimpleList(depId string) []*rboot.Message {
 	//client := pay.client.WithSecret(os.Getenv("WORKWX_CONTACT_SECRET"))
 
 	did, _ := strconv.Atoi(depId)
@@ -139,8 +139,8 @@ func (pay *payload) simpleListUser(depId string) []*rboot.Message {
 
 }
 
-// simpleListUser 获取部门成员详情
-func (pay *payload) listUser(depId string) []*rboot.Message {
+// userList 获取部门成员详情
+func (pay *payload) userList(depId string) []*rboot.Message {
 	//client := pay.client.WithSecret(os.Getenv("WORKWX_CONTACT_SECRET"))
 
 	did, _ := strconv.Atoi(depId)
@@ -231,19 +231,19 @@ func (pay *payload) userSetup(bot *rboot.Robot, in *rboot.Message) []*rboot.Mess
 
 	switch rule {
 	case `user_create`:
-		return pay.createUser(args[1], args[2], args[3])
+		return pay.userCreate(args[1], args[2], args[3])
 	case `user_get`:
-		return pay.getUser(args[1])
+		return pay.userGet(args[1])
 	case `user_update`:
-		return pay.updateUser(args[1], args[2])
+		return pay.userUpdate(args[1], args[2])
 	case `user_delete`:
-		return pay.deleteUser(args[1])
+		return pay.userDelete(args[1])
 	case `user_batchdel`:
-		return pay.batchDeleteUsers(args[1])
+		return pay.userBatchDelete(args[1])
 	case `user_list`:
-		return pay.simpleListUser(args[1])
+		return pay.userSimpleList(args[1])
 	case `user_lists`:
-		return pay.listUser(args[1])
+		return pay.userList(args[1])
 	case `user_invite`:
 		return pay.batchInvite(args[1])
 	case `user_get_qrcode`:
