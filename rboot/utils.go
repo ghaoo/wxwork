@@ -106,12 +106,24 @@ func storeResult(filename string, data []byte) string {
 	}
 
 	fpath := filepath.Join(basePath, "tmp", filename)
+
+	os.Remove(fpath)
+
 	MkDir(filepath.Dir(fpath))
-	err := WriteFile(fpath, data)
+
+	f, err := os.OpenFile(fpath, os.O_CREATE|os.O_RDWR, 0660)
 	if err != nil {
-		logrus.WithError(err).Errorf("写入结果文件【%s】失败", filepath.Join(basePath, filename))
+		logrus.Error(err)
 		return ""
 	}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	_, err = w.Write(data)
+	if err != nil {
+		logrus.Error(err)
+		return ""
+	}
+	w.Flush()
 
 	return fpath
 }
