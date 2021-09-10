@@ -25,6 +25,7 @@ func (pay *payload) uploadImg(file string) []*rboot.Message {
 	return rboot.NewMessages(fmt.Sprintf("[点击查看图片](%s)", picUrl))
 }
 
+// mediaSetup 素材管理插件解析函数
 func (pay *payload) mediaSetup(bot *rboot.Robot, in *rboot.Message) []*rboot.Message {
 	rule := in.Header.Get("rule")
 	args := in.Header["args"]
@@ -39,6 +40,7 @@ func (pay *payload) mediaSetup(bot *rboot.Robot, in *rboot.Message) []*rboot.Mes
 	return nil
 }
 
+// mediaPlugin 素材管理插件
 func (pay *payload) mediaPlugin() rboot.Plugin {
 	return rboot.Plugin{
 		Action: pay.mediaSetup,

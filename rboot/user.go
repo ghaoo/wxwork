@@ -260,37 +260,41 @@ func (pay *payload) userSetup(bot *rboot.Robot, in *rboot.Message) []*rboot.Mess
 	return nil
 }
 
+var userRuleset = map[string]string{
+	`user_create`:         `^!user create (.+) (\d+) (\d+)`,
+	`user_get`:            `^!user get ([\w@\-\.]+)`,
+	`user_update`:         `^!user update ([\w@\-\.]+) (.+)`,
+	`user_delete`:         `^!user delete ([\w@\-\.]+)`,
+	`user_batchdel`:       `^!user batchdel ([\w@\-\.,]+)`,
+	`user_list`:           `^!user list (\d+)`,
+	`user_lists`:          `^!user lists (\d+)`,
+	`user_invite`:         `^!user invite ([\w@\-\.]+)`,
+	`user_get_qrcode`:     `^!user qrcode`,
+	`user_active_stat`:    `^!user stat (\d{4}\-\d{2}-\d{2})`,
+	`user_to_openid`:      `^!userid to openid ([\w@\-\.]+)`,
+	`user_openid_to_user`: `^!openid to userid ([\w@\-\.]+)`,
+}
+
+var userUsage = map[string]string{
+	"!user create [姓名] [电话] [部门ID]": "新增成员，注意权限!",
+	"!user get [成员ID]":              "读取成员",
+	"!user update [成员ID] [姓名]":      "更新成员",
+	"!user delete [成员ID]":           "删除成员",
+	"!user batchdel [成员ID,成员ID...]": "批量删除成员，用`,`隔开",
+	"!user list [部门ID]":             "获取部门成员，注意权限",
+	"!user lists [部门ID]":            "获取部门成员详情，注意权限",
+	"!user invite [成员ID]":           "邀请部门成员使用企业微信",
+	"!user qrcode":                  "获取加入企业二维码，注意权限",
+	"!user stat [起始时间2021-01-02]":   "获取企业活跃成员数，最长支持获取30天前数据",
+	"!userid to openid [成员ID]":      "成员ID转换为Openid",
+	"!openid to userid [Openid]":    "Openid转换为成员ID",
+}
+
 func (pay *payload) userPlugin() rboot.Plugin {
 	return rboot.Plugin{
-		Action: pay.userSetup,
-		Ruleset: map[string]string{
-			`user_create`:         `^!user create (.+) (\d+) (\d+)`,
-			`user_get`:            `^!user get ([\w@\-\.]+)`,
-			`user_update`:         `^!user update ([\w@\-\.]+) (.+)`,
-			`user_delete`:         `^!user delete ([\w@\-\.]+)`,
-			`user_batchdel`:       `^!user batchdel ([\w@\-\.,]+)`,
-			`user_list`:           `^!user list (\d+)`,
-			`user_lists`:          `^!user lists (\d+)`,
-			`user_invite`:         `^!user invite ([\w@\-\.]+)`,
-			`user_get_qrcode`:     `^!user qrcode`,
-			`user_active_stat`:    `^!user stat (\d{4}\-\d{2}-\d{2})`,
-			`user_to_openid`:      `^!userid to openid ([\w@\-\.]+)`,
-			`user_openid_to_user`: `^!openid to userid ([\w@\-\.]+)`,
-		},
-		Usage: map[string]string{
-			"!user create [姓名] [电话] [部门ID]": "新增成员，注意权限!",
-			"!user get [成员ID]":              "读取成员",
-			"!user update [成员ID] [姓名]":      "更新成员",
-			"!user delete [成员ID]":           "删除成员",
-			"!user batchdel [成员ID,成员ID...]": "批量删除成员，用`,`隔开",
-			"!user list [部门ID]":             "获取部门成员，注意权限",
-			"!user lists [部门ID]":            "获取部门成员详情，注意权限",
-			"!user invite [成员ID]":           "邀请部门成员使用企业微信",
-			"!user qrcode":                  "获取加入企业二维码，注意权限",
-			"!user stat [起始时间2021-01-02]":   "获取企业活跃成员数，最长支持获取30天前数据",
-			"!userid to openid [成员ID]":      "成员ID转换为Openid",
-			"!openid to userid [Openid]":    "Openid转换为成员ID",
-		},
+		Action:      pay.userSetup,
+		Ruleset:     userRuleset,
+		Usage:       userUsage,
 		Description: `企业微信成员SDK示例和测试`,
 	}
 }
