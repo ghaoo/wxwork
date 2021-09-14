@@ -101,17 +101,13 @@ func (a *Agent) GetTag(id int) (tag Tag, err error) {
 	return tag, nil
 }
 
-func (a *Agent) addOrDelTagUsers(path string, tag Tag) (invalidlist string, invalidparty []int, err error) {
-	userList := make([]string, 0)
-	for _, user := range tag.UserList {
-		userList = append(userList, user.UserID)
-	}
+type Tags struct {
+	TagID     int      `json:"tagid,omitempty"`     // 标签id
+	UserList  []string `json:"userlist,omitempty"`  // 标签成员ID列表
+	PartyList []int    `json:"partylist,omitempty"` // 标签部门ID列表
+}
 
-	tags := map[string]interface{}{
-		"tagid":     tag.TagID,
-		"userlist":  userList,
-		"partylist": tag.PartyList,
-	}
+func (a *Agent) addOrDelTagUsers(path string, tags Tags) (invalidlist string, invalidparty []int, err error) {
 
 	body, _ := json.Marshal(tags)
 
@@ -128,25 +124,25 @@ func (a *Agent) addOrDelTagUsers(path string, tag Tag) (invalidlist string, inva
 
 // AddTagUsers 增加标签成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90214
-func (a *Agent) AddTagUsers(id int, users []User, parties []int) (invalidlist string, invalidparty []int, err error) {
-	tag := Tag{
+func (a *Agent) AddTagUsers(id int, user []string, parties []int) (invalidlist string, invalidparty []int, err error) {
+	tags := Tags{
 		TagID:     id,
-		UserList:  users,
+		UserList:  user,
 		PartyList: parties,
 	}
 
-	return a.addOrDelTagUsers("tag/addtagusers", tag)
+	return a.addOrDelTagUsers("tag/addtagusers", tags)
 }
 
 // DelTagUsers 删除标签成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90215
-func (a *Agent) DelTagUsers(id int, users []User, parties []int) (invalidlist string, invalidparty []int, err error) {
-	tag := Tag{
+func (a *Agent) DelTagUsers(id int, user []string, parties []int) (invalidlist string, invalidparty []int, err error) {
+	tags := Tags{
 		TagID:     id,
-		UserList:  users,
+		UserList:  user,
 		PartyList: parties,
 	}
-	return a.addOrDelTagUsers("tag/deltagusers", tag)
+	return a.addOrDelTagUsers("tag/deltagusers", tags)
 }
 
 // ListTags 获取标签列表
