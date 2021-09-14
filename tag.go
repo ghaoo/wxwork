@@ -9,10 +9,10 @@ import (
 
 // Tag 标签结构
 type Tag struct {
-	TagID     int      `json:"tagid"`               // 标签id
-	TagName   string   `json:"tagname"`             // 标签名称
-	UserList  []string `json:"userlist,omitempty"`  // 标签成员ID列表
-	PartyList []int    `json:"partylist,omitempty"` // 标签部门ID列表
+	TagID     int    `json:"tagid,omitempty"`     // 标签id
+	TagName   string `json:"tagname,omitempty"`   // 标签名称
+	UserList  []User `json:"userlist,omitempty"`  // 标签成员ID列表
+	PartyList []int  `json:"partylist,omitempty"` // 标签部门ID列表
 }
 
 // CreateTag 创建标签
@@ -73,39 +73,47 @@ func (a *Agent) DeleteTag(id int) error {
 
 // GetTag 获取标签成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90213
-func (a *Agent) GetTag(id int) (*Tag, error) {
+func (a *Agent) GetTag(id int) (tag Tag, err error) {
 	var caller struct {
 		baseCaller
-		TagName  string `json:"tagname"`
-		UserList []struct {
-			UserID string `json:"userid"`
-			Name   string `json:"name"`
-		} `json:"userlist"`
+		TagName   string `json:"tagname"`
+		UserList  []User `json:"userlist"`
 		PartyList []int
 	}
 
 	query := url.Values{}
 	query.Set("tagid", strconv.Itoa(id))
-	err := a.ExecuteWithToken("GET", "tag/get", query, nil, &caller)
+	err = a.ExecuteWithToken("GET", "tag/get", query, nil, &caller)
 	if err != nil {
-		return nil, err
+		return tag, err
 	}
 
-	tag := &Tag{
+	tag = Tag{
 		TagID:     id,
 		TagName:   caller.TagName,
 		PartyList: caller.PartyList,
 	}
 
 	for _, users := range caller.UserList {
-		tag.UserList = append(tag.UserList, users.UserID)
+		tag.UserList = append(tag.UserList, users)
 	}
 
 	return tag, nil
 }
 
 func (a *Agent) addOrDelTagUsers(path string, tag Tag) (invalidlist string, invalidparty []int, err error) {
-	body, _ := json.Marshal(tag)
+	userList := make([]string, 0)
+	for _, user := range tag.UserList {
+		userList = append(userList, user.UserID)
+	}
+
+	tags := map[string]interface{}{
+		"tagid":     tag.TagID,
+		"userlist":  userList,
+		"partylist": tag.PartyList,
+	}
+
+	body, _ := json.Marshal(tags)
 
 	var caller struct {
 		baseCaller
@@ -120,7 +128,7 @@ func (a *Agent) addOrDelTagUsers(path string, tag Tag) (invalidlist string, inva
 
 // AddTagUsers 增加标签成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90214
-func (a *Agent) AddTagUsers(id int, users []string, parties []int) (invalidlist string, invalidparty []int, err error) {
+func (a *Agent) AddTagUsers(id int, users []User, parties []int) (invalidlist string, invalidparty []int, err error) {
 	tag := Tag{
 		TagID:     id,
 		UserList:  users,
@@ -132,7 +140,7 @@ func (a *Agent) AddTagUsers(id int, users []string, parties []int) (invalidlist 
 
 // DelTagUsers 删除标签成员
 // 文档: https://work.weixin.qq.com/api/doc/90000/90135/90215
-func (a *Agent) DelTagUsers(id int, users []string, parties []int) (invalidlist string, invalidparty []int, err error) {
+func (a *Agent) DelTagUsers(id int, users []User, parties []int) (invalidlist string, invalidparty []int, err error) {
 	tag := Tag{
 		TagID:     id,
 		UserList:  users,
