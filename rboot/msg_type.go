@@ -9,6 +9,6 @@ const (
 	MSG_TYPE_TEXTCARD = "textcard" // 文本卡片消息
 	MSG_TYPE_MARKDOWN = "markdown" // markdown消息
 	MSG_TYPE_LOCATION = "location" // 位置消息
-	MSG_TYPE_LINK     = "link"     // 位置消息
+	MSG_TYPE_LINK     = "link"     // 链接消息
 	MSG_TYPE_EVENT    = "event"    // 事件消息
 )

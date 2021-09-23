@@ -7,6 +7,9 @@ type ExternalProfile struct {
 	// 企业对外简称，需从已认证的企业简称中选填。可在“我的企业”页中查看企业简称认证状态。
 	CorpName string `json:"external_corp_name,omitempty"`
 
+	// 视频号属性
+	WechatChannels WechatChannels `json:"wechat_channels"`
+
 	// 属性列表，目前支持文本、网页、小程序三种类型
 	ExternalAttr ExternalAttr `json:"external_attr,omitempty"`
 }
@@ -58,5 +61,14 @@ type MiniprogramAttr struct {
 	Title string `json:"title,omitempty"`
 
 	// 小程序的页面路径
-	Pagepath string `json:"pagepath,omitempty"`
+	PagePath string `json:"pagepath,omitempty"`
+}
+
+// WechatChannels 视频号属性。须从企业绑定到企业微信的视频号中选择，可在“我的企业”页中查看绑定的视频号。第三方仅通讯录应用可获取；对于非第三方创建的成员，第三方通讯录应用也不可获取。注意：externalcontact/get不返回该字段
+type WechatChannels struct {
+	// 视频号名字（设置后，成员将对外展示该视频号）
+	NickName string `json:"nickname"`
+
+	// 对外展示视频号状态。0表示企业视频号已被确认，可正常使用，1表示企业视频号待确认
+	Status int `json:"status"`
 }

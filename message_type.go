@@ -128,12 +128,15 @@ func NewMPNewsMessage(articles []MPNewsArticle) *Message {
 
 // MiniprogramNoticeMessage 小程序消息
 type MiniprogramNoticeMessage struct {
-	Appid             string            `json:"appid,omitempty"`               // 小程序appid,必须是与当前小程序应用关联的小程序
-	Page              string            `json:"page,omitempty"`                // 点击消息卡片后的小程序页面，仅限本小程序内的页面
-	Title             string            `json:"title,omitempty"`               // 消息标题
-	Description       string            `json:"description,omitempty"`         // 消息描述
-	EmphasisFirstItem bool              `json:"emphasis_first_item,omitempty"` // 是否放大第一个content_item
-	ContentItem       map[string]string `json:"content_item,omitempty"`        // 消息内容键值对，最多允许10个item
+	Appid                  string            `json:"appid,omitempty"`                    // 小程序appid,必须是与当前小程序应用关联的小程序
+	Page                   string            `json:"page,omitempty"`                     // 点击消息卡片后的小程序页面，仅限本小程序内的页面
+	Title                  string            `json:"title,omitempty"`                    // 消息标题
+	Description            string            `json:"description,omitempty"`              // 消息描述
+	EmphasisFirstItem      bool              `json:"emphasis_first_item,omitempty"`      // 是否放大第一个content_item
+	ContentItem            map[string]string `json:"content_item,omitempty"`             // 消息内容键值对，最多允许10个item
+	EnableIdTrans          int               `json:"enable_id_trans,omitempty"`          // 表示是否开启id转译，0表示否，1表示是，默认0
+	EnableDuplicateCheck   int               `json:"enable_duplicate_check,omitempty"`   // 表示是否开启重复消息检查，0表示否，1表示是，默认0
+	DuplicateCheckInterval int               `json:"duplicate_check_interval,omitempty"` // 表示是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
 }
 
 // NewMiniprogramNoticeMessage 创建一条小程序消息
