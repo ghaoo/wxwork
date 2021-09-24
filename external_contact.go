@@ -135,7 +135,69 @@ func (a *Agent) GetContactWay(config_id string) (ContactWay, error) {
 		ContactWay ContactWay `json:"contact_way"`
 	}
 
-	err := a.ExecuteWithToken("POST", "user/convert_to_openid", nil, bytes.NewReader(body), &caller)
+	err := a.ExecuteWithToken("POST", "externalcontact/get_contact_way", nil, bytes.NewReader(body), &caller)
 
 	return caller.ContactWay, err
+}
+
+// ListContactWay 获取企业已配置的「联系我」列表
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92572#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E5%B7%B2%E9%85%8D%E7%BD%AE%E7%9A%84%E3%80%8C%E8%81%94%E7%B3%BB%E6%88%91%E3%80%8D%E5%88%97%E8%A1%A8
+// @response contact_way 联系方式的配置id
+// @response next_cursor 分页参数，用于查询下一个分页的数据，为空时表示没有更多的分页
+func (a *Agent) ListContactWay(start_time, end_time int64, limit int, cursor string) (contact_way []map[string]string, next_cursor string, err error) {
+	param := map[string]interface{}{
+		"start_time": start_time,
+		"end_time":   end_time,
+		"limit":      limit,
+		"cursor":     cursor,
+	}
+	body, _ := json.Marshal(param)
+
+	var caller struct {
+		baseCaller
+		ContactWay []map[string]string `json:"contact_way"`
+		NextCursor string              `json:"next_cursor"`
+	}
+
+	err = a.ExecuteWithToken("POST", "externalcontact/list_contact_way", nil, bytes.NewReader(body), &caller)
+
+	return caller.ContactWay, caller.NextCursor, err
+}
+
+// UpdateContactWay 更新企业已配置的「联系我」方式
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92572#%E6%9B%B4%E6%96%B0%E4%BC%81%E4%B8%9A%E5%B7%B2%E9%85%8D%E7%BD%AE%E7%9A%84%E3%80%8C%E8%81%94%E7%B3%BB%E6%88%91%E3%80%8D%E6%96%B9%E5%BC%8F
+func (a *Agent) UpdateContactWay(cw ContactWay) error {
+	body, _ := json.Marshal(cw)
+
+	var caller baseCaller
+
+	return a.ExecuteWithToken("POST", "externalcontact/update_contact_way", nil, bytes.NewReader(body), &caller)
+}
+
+// DelContactWay 删除企业已配置的「联系我」方式
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92572#%E5%88%A0%E9%99%A4%E4%BC%81%E4%B8%9A%E5%B7%B2%E9%85%8D%E7%BD%AE%E7%9A%84%E3%80%8C%E8%81%94%E7%B3%BB%E6%88%91%E3%80%8D%E6%96%B9%E5%BC%8F
+func (a *Agent) DelContactWay(config_id string) error {
+	param := map[string]string{
+		"config_id": config_id,
+	}
+	body, _ := json.Marshal(param)
+
+	var caller baseCaller
+
+	return a.ExecuteWithToken("POST", "externalcontact/del_contact_way", nil, bytes.NewReader(body), &caller)
+}
+
+// CloseTempChat 结束临时会话
+// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92572#%E7%BB%93%E6%9D%9F%E4%B8%B4%E6%97%B6%E4%BC%9A%E8%AF%9D
+func (a *Agent) CloseTempChat(userid, external_userid string) error {
+	param := map[string]string{
+		"userid":          userid,
+		"external_userid": external_userid,
+	}
+
+	body, _ := json.Marshal(param)
+
+	var caller baseCaller
+
+	return a.ExecuteWithToken("POST", "externalcontact/close_temp_chat", nil, bytes.NewReader(body), &caller)
 }
