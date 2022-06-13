@@ -123,11 +123,11 @@ func (a *Agent) BatchDeleteUsers(ids ...string) error {
 		return nil
 	}
 
-	useridlist := map[string][]string{
+	userIDList := map[string][]string{
 		"useridlist": ids,
 	}
 
-	body, _ := json.Marshal(useridlist)
+	body, _ := json.Marshal(userIDList)
 
 	var caller baseCaller
 

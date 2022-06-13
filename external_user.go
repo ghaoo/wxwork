@@ -6,7 +6,7 @@ import (
 )
 
 // ExternalProfile 成员对外信息
-// 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/92230
+// 文档地址: https://developer.work.weixin.qq.com/document/path/92230
 type ExternalProfile struct {
 
 	// 企业对外简称，需从已认证的企业简称中选填。可在“我的企业”页中查看企业简称认证状态。
@@ -132,7 +132,7 @@ type ExternalContact struct {
 }
 
 // ExternalCustomerList 获取客户列表
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92113
+// 文档: https://developer.work.weixin.qq.com/document/path/92113
 func (a *Agent) ExternalCustomerList(userid string) ([]string, error) {
 	param := map[string]string{
 		"userid": userid,
@@ -150,7 +150,7 @@ func (a *Agent) ExternalCustomerList(userid string) ([]string, error) {
 }
 
 // ExternalUserGet 获取客户详情
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92114
+// 文档: https://developer.work.weixin.qq.com/document/path/92114
 func (a *Agent) ExternalUserGet(external_userid, cursor string) (ec ExternalContact, next_cursor string, err error) {
 	param := map[string]string{
 		"external_userid": external_userid,
@@ -168,3 +168,6 @@ func (a *Agent) ExternalUserGet(external_userid, cursor string) (ec ExternalCont
 
 	return caller.ExternalContact, caller.NextCursor, err
 }
+
+//
+// 文档: https://developer.work.weixin.qq.com/document/path/92994
