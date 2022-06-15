@@ -8,7 +8,7 @@ import (
 )
 
 // Department 成员部门信息
-// 文档地址: https://work.weixin.qq.com/api/doc/90000/90135/90204
+// 文档地址: https://developer.work.weixin.qq.com/document/path/90205
 type Department struct {
 	// 部门id，32位整型，指定时必须大于1。若不填该参数，将自动生成id
 	ID int `json:"id,omitempty" xml:"Id,omitempty"`
@@ -23,7 +23,7 @@ type Department struct {
 }
 
 // CreateDepartment 创建部门
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90205
+// 文档: https://developer.work.weixin.qq.com/document/path/90205
 func (a *Agent) CreateDepartment(dept Department) (int, error) {
 	body, _ := json.Marshal(dept)
 
@@ -37,7 +37,7 @@ func (a *Agent) CreateDepartment(dept Department) (int, error) {
 }
 
 // UpdateDepartment 更新部门
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90206
+// 文档: https://developer.work.weixin.qq.com/document/path/90206
 func (a *Agent) UpdateDepartment(dept Department) error {
 	body, _ := json.Marshal(dept)
 
@@ -46,7 +46,7 @@ func (a *Agent) UpdateDepartment(dept Department) error {
 }
 
 // DeleteDepartment 删除部门
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90207
+// 文档: https://developer.work.weixin.qq.com/document/path/90207
 func (a *Agent) DeleteDepartment(id int) error {
 	var caller baseCaller
 	query := url.Values{}
@@ -55,7 +55,7 @@ func (a *Agent) DeleteDepartment(id int) error {
 }
 
 // ListDepartment 获取部门列表
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/90208
+// 文档: https://developer.work.weixin.qq.com/document/path/90208
 func (a *Agent) ListDepartment(id ...int) ([]Department, error) {
 	query := url.Values{}
 	if len(id) > 0 {
