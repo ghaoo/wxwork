@@ -48,7 +48,7 @@ type CorpTagGroup struct {
 }
 
 // GetCorpTagList 获取企业标签库
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92117#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E6%A0%87%E7%AD%BE%E5%BA%93
+// 文档: https://developer.work.weixin.qq.com/document/path/92117#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E6%A0%87%E7%AD%BE%E5%BA%93
 // 若tag_id和group_id均为空，则返回所有标签。
 // 同时传递tag_id和group_id时，忽略tag_id，仅以group_id作为过滤条件。
 func (a *Agent) GetCorpTagList(tagId, groupId []string) ([]CorpTagGroup, error) {
@@ -70,7 +70,7 @@ func (a *Agent) GetCorpTagList(tagId, groupId []string) ([]CorpTagGroup, error) 
 }
 
 // AddCorpTag 添加企业客户标签
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92117#%E6%B7%BB%E5%8A%A0%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
+// 文档: https://developer.work.weixin.qq.com/document/path/92117#%E6%B7%BB%E5%8A%A0%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
 func (a *Agent) AddCorpTag(group CorpTagGroup, tags []CorpTag) ([]CorpTagGroup, error) {
 	param := map[string]interface{}{
 		"group_id":   group.GroupId,
@@ -92,7 +92,7 @@ func (a *Agent) AddCorpTag(group CorpTagGroup, tags []CorpTag) ([]CorpTagGroup, 
 }
 
 // EditCorpTag 编辑企业客户标签
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92117#%E7%BC%96%E8%BE%91%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
+// 文档: https://developer.work.weixin.qq.com/document/path/92117#%E7%BC%96%E8%BE%91%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
 func (a *Agent) EditCorpTag(id, name string, order int) error {
 	param := map[string]interface{}{
 		"id":    id,
@@ -108,7 +108,7 @@ func (a *Agent) EditCorpTag(id, name string, order int) error {
 }
 
 // DelCorpTag 删除企业客户标签
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/92117#%E5%88%A0%E9%99%A4%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
+// 文档: https://developer.work.weixin.qq.com/document/path/92117#%E5%88%A0%E9%99%A4%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
 func (a *Agent) DelCorpTag(tagId, groupId []string) error {
 	param := map[string][]string{
 		"tag_id":   tagId,
@@ -123,7 +123,7 @@ func (a *Agent) DelCorpTag(tagId, groupId []string) error {
 }
 
 // GetStrategyTagList 获取指定规则组下的企业客户标签
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/94882#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E8%A7%84%E5%88%99%E7%BB%84%E4%B8%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
+// 文档: https://developer.work.weixin.qq.com/document/path/94882#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E8%A7%84%E5%88%99%E7%BB%84%E4%B8%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
 func (a *Agent) GetStrategyTagList(strategy_id int, tagId, groupId []string) ([]CorpTagGroup, error) {
 	param := map[string]interface{}{
 		"strategy_id": strategy_id,
@@ -144,7 +144,7 @@ func (a *Agent) GetStrategyTagList(strategy_id int, tagId, groupId []string) ([]
 }
 
 // AddStrategyTag 为指定规则组创建企业客户标签
-// 文档: https://work.weixin.qq.com/api/doc/90000/90135/94882#%E4%B8%BA%E6%8C%87%E5%AE%9A%E8%A7%84%E5%88%99%E7%BB%84%E5%88%9B%E5%BB%BA%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
+// 文档: https://developer.work.weixin.qq.com/document/path/94882#%E4%B8%BA%E6%8C%87%E5%AE%9A%E8%A7%84%E5%88%99%E7%BB%84%E5%88%9B%E5%BB%BA%E4%BC%81%E4%B8%9A%E5%AE%A2%E6%88%B7%E6%A0%87%E7%AD%BE
 func (a *Agent) AddStrategyTag(group CorpTagGroup, tags []CorpTag) ([]CorpTagGroup, error) {
 	param := map[string]interface{}{
 		"group_id":   group.GroupId,
